@@ -25,10 +25,14 @@ class Engine:
                  radius_of_base: float, size_of_unit: float):
         self.units = list()
         self.bases = list()
+
+        contains_x, contains_y = width, height
+
         for i in range(count_of_units):
-            coords = {'x': random() * radius_of_base + (width - radius_of_base * 3), 'y': random() * radius_of_base + (height - radius_of_base * 3)}
+            # coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
+            coords = {'x': random() * contains_x, 'y': random() * contains_y}
             self.units.append(Unit(coords, random() * 2 * math.pi, "A",
-                                   kinds_of_bases, i, {'x': width, 'y': height}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
+                                   kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
 #         coords = {'x': width / 7 * 2, 'y': height / 3 * 1}
 #         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
 # 
@@ -39,18 +43,17 @@ class Engine:
 #         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 # 
 
+        coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5 + radius_of_base, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5 + radius_of_base}
+        self.bases.append(Base(coords, 'C', 'D', 1, radius_of_base))
 
-        coords = {'x': width - (width ** 2 / 2) ** 0.5 + radius_of_base, 'y': height - (height ** 2 / 2) ** 0.5 + radius_of_base}
+        coords = {'x': radius_of_base, 'y': contains_y - radius_of_base}
+        self.bases.append(Base(coords, 'B', 'C', 1, radius_of_base))
+
+        coords = {'x': contains_x - radius_of_base, 'y': radius_of_base}
+        self.bases.append(Base(coords, 'D', 'A', 1, radius_of_base))
+
+        coords = {'x': contains_x - radius_of_base, 'y': contains_y - radius_of_base}
         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
-
-        coords = {'x': radius_of_base, 'y': height - radius_of_base}
-        self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
-
-        coords = {'x': width - radius_of_base, 'y': radius_of_base}
-        self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
-
-        coords = {'x': width - radius_of_base, 'y': height - radius_of_base}
-        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 
 
 # undone magic!!!
@@ -69,7 +72,7 @@ class Engine:
                 # not done, yet
 
                 self.check_responses(unit, base.kind)
-                # self.check_requests(unit)
+                self.check_requests(unit)
 
 
     def check_responses(self, unit, key):
@@ -88,7 +91,7 @@ class Engine:
 
 
     def listen(self, unit, unit2, key):
-        if unit.points[key] > unit2.points[key] + unit.distance + self.distance * 0.75:
+        if unit.points[key] > unit2.points[key] + unit.distance + self.distance * 0.25:
             unit.points[key] = unit2.points[key] + unit.distance
 
             if key == unit.destiny:
@@ -114,11 +117,15 @@ class Engine:
     def forward(unit):
         dx = unit.speed * math.cos(unit.rotation)
         dy = unit.speed * math.sin(unit.rotation)
-        if unit.coords['x'] + dx >= unit.contains['x'] or unit.coords['y'] + dy >= unit.contains['y'] or \
-                unit.coords['x'] + dx <= 0 or unit.coords['y'] + dy <= 0:
-            unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
+
+        if unit.coords['x'] + dx >= unit.contains['x'] or unit.coords['x'] + dx <= 0:
+            unit.rotation = math.pi - unit.rotation
             dx = unit.speed * math.cos(unit.rotation)
+        
+        if unit.coords['y'] + dy >= unit.contains['y'] or unit.coords['y'] + dy <= 0:
+            unit.rotation = 2 * math.pi - unit.rotation
             dy = unit.speed * math.sin(unit.rotation)
+
         unit.coords['x'] += dx
         unit.coords['y'] += dy
         unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
@@ -133,6 +140,8 @@ class Engine:
     UNIT_COLOR = (0, 0, 255)
     BASE1_COLOR = (255, 128, 0)
     BASE2_COLOR = (255, 0, 0)
+    BASE3_COLOR = (255, 255, 0)
+    BASE4_COLOR = (255, 0, 255)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -142,10 +151,27 @@ class Engine:
             color = (255, 255, 255)
             if base.kind == 'A':
                 color = self.BASE1_COLOR
-            else:
+            elif base.kind == 'B':
                 color = self.BASE2_COLOR
+            elif base.kind == 'C':
+                color = self.BASE3_COLOR
+            elif base.kind == 'D':
+                color = self.BASE4_COLOR
 
             pygame.draw.circle(screen, color, coords, self.point_radius)
+
+            color = (255, 255, 255)
+            if base.next == 'A':
+                color = self.BASE1_COLOR
+            elif base.next == 'B':
+                color = self.BASE2_COLOR
+            elif base.next == 'C':
+                color = self.BASE3_COLOR
+            elif base.next == 'D':
+                color = self.BASE4_COLOR
+
+            pygame.draw.circle(screen, color, coords, self.point_radius / 2)
+
 
         for unit in self.units:
             coords = (unit.coords["x"], unit.coords["y"])
@@ -184,18 +210,4 @@ class Engine:
 
             self.render(screen)
             pygame.display.flip()
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
 
