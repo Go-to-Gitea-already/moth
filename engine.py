@@ -10,7 +10,7 @@ class Engine:
     units = list()
     bases = list()
 
-    def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list, radius_of_base: float, unit_size: float, units_speed: float, sim_speed: int, distance: float):
+    def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list, radius_of_base: float, unit_size: float, units_speed: float, distance: float):
         self.units_speed = units_speed
         self.width = width
         self.height = height
@@ -26,24 +26,38 @@ class Engine:
         self.units = list()
         self.bases = list()
         for i in range(count_of_units):
-            coords = {'x': random() * width / 7 * 1.5 + width / 7 * 2.75, 'y': random() * height / 5 * 1.5 + height / 5 * 1.75}
+            coords = {'x': random() * radius_of_base + (width - radius_of_base * 3), 'y': random() * radius_of_base + (height - radius_of_base * 3)}
             self.units.append(Unit(coords, random() * 2 * math.pi, "A",
                                    kinds_of_bases, i, {'x': width, 'y': height}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
+#         coords = {'x': width / 7 * 2, 'y': height / 3 * 1}
+#         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
+# 
+#         coords = {'x': width / 7 * 2, 'y': height / 3 * 2}
+#         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
+# 
+#         coords = {'x': width / 7 * 5, 'y': height / 10 * 5}
+#         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
+# 
 
-        coords = {'x': width / 7 * 2, 'y': height / 3 * 1}
+
+        coords = {'x': width - (width ** 2 / 2) ** 0.5 + radius_of_base, 'y': height - (height ** 2 / 2) ** 0.5 + radius_of_base}
         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
 
-        coords = {'x': width / 7 * 2, 'y': height / 3 * 2}
+        coords = {'x': radius_of_base, 'y': height - radius_of_base}
         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
 
-        coords = {'x': width / 7 * 5, 'y': height / 10 * 5}
+        coords = {'x': width - radius_of_base, 'y': radius_of_base}
+        self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
+
+        coords = {'x': width - radius_of_base, 'y': height - radius_of_base}
         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 
-        # for i in range(count_of_bases):
-        #    coords = {'x': random() * width, 'y': random() * height}
-        #    kind = choice(kinds_of_bases)
-        #    self.bases.append(Base(coords, kind, choice(list({*kinds_of_bases} - {kind})), i, radius_of_base,
-        #                           self.graphics.new_image(coords, radius_of_base * 2, 'yellow')))
+
+# undone magic!!!
+#         for i in range(count_of_bases):
+#            coords = {'x': random() * width, 'y': random() * height}
+#            kind = choice(kinds_of_bases)
+#            self.bases.append(Base(coords, kind, choice(list({*kinds_of_bases} - {kind})), i, radius_of_base))
 
 
     def check_encounter(self, unit: Unit):
@@ -53,8 +67,9 @@ class Engine:
                 Engine.encounter(unit, base)
 
                 # not done, yet
+
                 self.check_responses(unit, base.kind)
-                self.check_requests(unit)
+                # self.check_requests(unit)
 
 
     def check_responses(self, unit, key):
@@ -73,7 +88,7 @@ class Engine:
 
 
     def listen(self, unit, unit2, key):
-        if unit.points[key] > unit2.points[key] + unit.distance + self.distance * 0.25:
+        if unit.points[key] > unit2.points[key] + unit.distance + self.distance * 0.75:
             unit.points[key] = unit2.points[key] + unit.distance
 
             if key == unit.destiny:
@@ -106,24 +121,31 @@ class Engine:
             dy = unit.speed * math.sin(unit.rotation)
         unit.coords['x'] += dx
         unit.coords['y'] += dy
-#         unit.rotation = (unit.rotation + math.pi / 200 * uniform(-1, 1)) % (2 * math.pi)
+        unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
         for key in unit.points.keys():
-            unit.points[key] = unit.points[key] + 1
+            unit.points[key] = unit.points[key] + unit.speed
        
 
     def timer_tick(self):
         pass
 
 
-    UNIT_COLOR = (255, 128, 0)
-    BASE_COLOR = (0, 0, 255)
+    UNIT_COLOR = (0, 0, 255)
+    BASE1_COLOR = (255, 128, 0)
+    BASE2_COLOR = (255, 0, 0)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
 
         for base in self.bases:
             coords = (base.coords["x"], base.coords["y"])
-            pygame.draw.circle(screen, self.BASE_COLOR, coords, self.point_radius)
+            color = (255, 255, 255)
+            if base.kind == 'A':
+                color = self.BASE1_COLOR
+            else:
+                color = self.BASE2_COLOR
+
+            pygame.draw.circle(screen, color, coords, self.point_radius)
 
         for unit in self.units:
             coords = (unit.coords["x"], unit.coords["y"])
