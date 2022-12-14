@@ -1,2 +1,2 @@
 # moth
-Unique game with crazy envirowment
+Unique game with crazy environment
