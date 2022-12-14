@@ -10,14 +10,15 @@ class Engine:
     units = list()
     bases = list()
 
-    def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list, radius_of_base: float, units_size: float, units_speed: float, sim_speed: int, distance: float):
+    def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list, radius_of_base: float, unit_size: float, units_speed: float, sim_speed: int, distance: float):
         self.units_speed = units_speed
         self.width = width
         self.height = height
         self.distance = distance
         self.kinds_of_bases = kinds_of_bases
         self.point_radius = radius_of_base
-        self.generate(width, height, count_of_units, count_of_bases, kinds_of_bases, radius_of_base, units_size)
+        self.unit_size = unit_size
+        self.generate(width, height, count_of_units, count_of_bases, kinds_of_bases, radius_of_base, unit_size)
 
 
     def generate(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list,
@@ -72,7 +73,7 @@ class Engine:
 
 
     def listen(self, unit, unit2, key):
-        if unit.points[key] > unit2.points[key] + unit.distance:
+        if unit.points[key] > unit2.points[key] + unit.distance + self.distance * 0.25:
             unit.points[key] = unit2.points[key] + unit.distance
 
             if key == unit.destiny:
@@ -105,25 +106,28 @@ class Engine:
             dy = unit.speed * math.sin(unit.rotation)
         unit.coords['x'] += dx
         unit.coords['y'] += dy
-        # unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
+#         unit.rotation = (unit.rotation + math.pi / 200 * uniform(-1, 1)) % (2 * math.pi)
         for key in unit.points.keys():
             unit.points[key] = unit.points[key] + 1
        
 
     def timer_tick(self):
-        for unit in self.units:
-            Engine.forward(unit)
-            self.check_encounter(unit)
+        pass
 
 
-    UNIT_COLOR = pygame.Color("red")
-    BASE_COLOR = pygame.Color("green")
+    UNIT_COLOR = (255, 128, 0)
+    BASE_COLOR = (0, 0, 255)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
+
+        for base in self.bases:
+            coords = (base.coords["x"], base.coords["y"])
+            pygame.draw.circle(screen, self.BASE_COLOR, coords, self.point_radius)
+
         for unit in self.units:
             coords = (unit.coords["x"], unit.coords["y"])
-            pygame.draw.circle(screen, self.UNIT_COLOR, coords, 2)
+            pygame.draw.circle(screen, self.UNIT_COLOR, coords, self.unit_size)
 
 
 
@@ -133,7 +137,11 @@ class Engine:
         clock = pygame.time.Clock()
 
         TIMER_TICK = pygame.USEREVENT + 1
-        pygame.time.set_timer(TIMER_TICK, 50)
+        MOVE_EVENT = pygame.USEREVENT + 2
+        CHECK_EVENT = pygame.USEREVENT + 3
+#         pygame.time.set_timer(TIMER_TICK, 50)
+        pygame.time.set_timer(MOVE_EVENT, 50)
+        pygame.time.set_timer(CHECK_EVENT, 100)
 
         running = True
         while running:
@@ -143,6 +151,14 @@ class Engine:
 
                 elif event.type == TIMER_TICK:
                     self.timer_tick()
+
+                elif event.type == MOVE_EVENT:
+                    for unit in self.units:
+                        Engine.forward(unit)
+
+                elif event.type == CHECK_EVENT:
+                    for unit in self.units:
+                        self.check_encounter(unit)
 
             self.render(screen)
             pygame.display.flip()
