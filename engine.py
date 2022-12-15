@@ -28,11 +28,28 @@ class Engine:
 
         contains_x, contains_y = width, height
 
-        for i in range(count_of_units):
-            coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
+        bungle = count_of_units // 50
+        for i in range(50):
+            rotate = (math.pi + math.pi / 100 * i) % (2 * math.pi)
+
+            y_c = (contains_y - radius_of_base * -0.5) - (2 * radius_of_base - radius_of_base * math.sin(rotate))
+            x_c = (contains_x - radius_of_base * -0.5) - (2 * radius_of_base - radius_of_base * math.cos(rotate))
             # coords = {'x': random() * contains_x, 'y': random() * contains_y}
-            self.units.append(Unit(coords, random() * 2 * math.pi, "A",
-                                   kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
+
+            for j in range(bungle):
+                x_c += j
+                y_c += j
+                coords = {'x': x_c, 'y': y_c}
+                speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
+                self.units.append(Unit(coords, rotate, "B",
+                                       kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed))
+
+
+#         for i in range(count_of_units):
+#             coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
+#             # coords = {'x': random() * contains_x, 'y': random() * contains_y}
+#             self.units.append(Unit(coords, random() * 2 * math.pi, "A",
+#                                    kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
 #         coords = {'x': width / 7 * 2, 'y': height / 3 * 1}
 #         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
 # 
@@ -43,7 +60,7 @@ class Engine:
 #         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 # 
 
-        coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5 + radius_of_base, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5 + radius_of_base}
+        coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5}
         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 
         coords = {'x': radius_of_base, 'y': contains_y - radius_of_base}
@@ -91,12 +108,14 @@ class Engine:
 
 
     def listen(self, unit, unit2, key):
-        if unit.points[key] > unit2.points[key] + unit.distance + self.distance * 0.25:
+        if unit.points[key] > unit2.points[key] + unit.distance * 1:
             unit.points[key] = unit2.points[key] + unit.distance
 
             if key == unit.destiny:
                 dx = unit2.coords['x'] - unit.coords['x']
                 dy = unit2.coords['y'] - unit.coords['y']
+                if dx == 0:
+                    dx = 0.00000001
                 unit.rotation = math.atan(dy / dx)
                 if dx < 0:
                     unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
@@ -128,13 +147,15 @@ class Engine:
 
         unit.coords['x'] += dx
         unit.coords['y'] += dy
-        unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
+#         unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
         for key in unit.points.keys():
-            unit.points[key] = unit.points[key] + unit.speed
+            # unit.points[key] = unit.points[key] + unit.speed
+            unit.points[key] = unit.points[key] + 1
        
 
     def timer_tick(self):
-        pass
+        for unit in self.units:
+            self.check_requests(unit)
 
 
     UNIT_COLOR = (0, 0, 255)
@@ -187,8 +208,8 @@ class Engine:
         TIMER_TICK = pygame.USEREVENT + 1
         MOVE_EVENT = pygame.USEREVENT + 2
         CHECK_EVENT = pygame.USEREVENT + 3
-#         pygame.time.set_timer(TIMER_TICK, 50)
-        pygame.time.set_timer(MOVE_EVENT, 50)
+        pygame.time.set_timer(TIMER_TICK, 50)
+        pygame.time.set_timer(MOVE_EVENT, 25)
         pygame.time.set_timer(CHECK_EVENT, 100)
 
         running = True

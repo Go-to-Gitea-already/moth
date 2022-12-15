@@ -2,16 +2,16 @@ import math
 
 from engine import Engine
 
-w = 700
-h = 700
+w = 400
+h = 400
 
-units_count = 600
+units_count = 200
 unit_width = 2
 unit_speed = 1
-unit_hear_distance = 50
+unit_hear_distance = 25
 
 bases_count = 4
-base_types = ['A', 'B', 'C', 'D']
+base_types = ['A', 'B']
 base_radius = 30
 
 
