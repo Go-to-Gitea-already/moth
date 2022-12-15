@@ -29,8 +29,8 @@ class Engine:
         contains_x, contains_y = width, height
 
         for i in range(count_of_units):
-            # coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
-            coords = {'x': random() * contains_x, 'y': random() * contains_y}
+            coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
+            # coords = {'x': random() * contains_x, 'y': random() * contains_y}
             self.units.append(Unit(coords, random() * 2 * math.pi, "A",
                                    kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
 #         coords = {'x': width / 7 * 2, 'y': height / 3 * 1}
@@ -44,13 +44,13 @@ class Engine:
 # 
 
         coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5 + radius_of_base, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5 + radius_of_base}
-        self.bases.append(Base(coords, 'C', 'D', 1, radius_of_base))
+        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 
         coords = {'x': radius_of_base, 'y': contains_y - radius_of_base}
-        self.bases.append(Base(coords, 'B', 'C', 1, radius_of_base))
+        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 
         coords = {'x': contains_x - radius_of_base, 'y': radius_of_base}
-        self.bases.append(Base(coords, 'D', 'A', 1, radius_of_base))
+        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 
         coords = {'x': contains_x - radius_of_base, 'y': contains_y - radius_of_base}
         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
