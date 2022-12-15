@@ -5,10 +5,10 @@ from engine import Engine
 w = 1050
 h = 1050
 
-units_count = 154
+units_count = 275
 unit_width = 2
 unit_speed = 1
-unit_hear_distance = 100
+unit_hear_distance = 50
 
 bases_count = 4
 base_types = ['A', 'B']

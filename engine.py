@@ -146,7 +146,7 @@ class Engine:
 
         unit.coords['x'] += dx
         unit.coords['y'] += dy
-#         unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
+        unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
         for key in unit.points.keys():
             # unit.points[key] = unit.points[key] + unit.speed
             unit.points[key] = unit.points[key] + 1
@@ -207,8 +207,8 @@ class Engine:
         TIMER_TICK = pygame.USEREVENT + 1
         MOVE_EVENT = pygame.USEREVENT + 2
         CHECK_EVENT = pygame.USEREVENT + 3
-        pygame.time.set_timer(TIMER_TICK, 50)
-        pygame.time.set_timer(MOVE_EVENT, 25)
+        pygame.time.set_timer(TIMER_TICK, 100)
+        pygame.time.set_timer(MOVE_EVENT, 50)
         pygame.time.set_timer(CHECK_EVENT, 100)
 
         running = True
