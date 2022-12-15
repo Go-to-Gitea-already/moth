@@ -28,17 +28,16 @@ class Engine:
 
         contains_x, contains_y = width, height
 
-        bungle = count_of_units // 50
-        for i in range(50):
-            rotate = (math.pi + math.pi / 100 * i) % (2 * math.pi)
+        bungle = count_of_units // 11
+        for i in range(11):
+            rotate = (math.pi + math.pi / 20 * (i * 1)) % (2 * math.pi)
 
-            y_c = (contains_y - radius_of_base * -0.5) - (2 * radius_of_base - radius_of_base * math.sin(rotate))
-            x_c = (contains_x - radius_of_base * -0.5) - (2 * radius_of_base - radius_of_base * math.cos(rotate))
             # coords = {'x': random() * contains_x, 'y': random() * contains_y}
 
             for j in range(bungle):
-                x_c += j
-                y_c += j
+                y_c = (contains_y - radius_of_base * -1.0) - (2 * radius_of_base - (radius_of_base + j) * math.sin(rotate))
+                x_c = (contains_x - radius_of_base * -1.0) - (2 * radius_of_base - (radius_of_base + j) * math.cos(rotate))
+
                 coords = {'x': x_c, 'y': y_c}
                 speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
                 self.units.append(Unit(coords, rotate, "B",
