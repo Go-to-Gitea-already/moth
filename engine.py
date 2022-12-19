@@ -10,15 +10,15 @@ class Engine:
     units = list()
     bases = list()
 
-    def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list, radius_of_base: float, unit_size: float, units_speed: float, distance: float):
+    def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list, radius_of_base: float, unit_radius: float, units_speed: float, distance: float):
         self.units_speed = units_speed
         self.width = width
         self.height = height
         self.distance = distance
         self.kinds_of_bases = kinds_of_bases
         self.point_radius = radius_of_base
-        self.unit_size = unit_size
-        self.generate(width, height, count_of_units, count_of_bases, kinds_of_bases, radius_of_base, unit_size)
+        self.unit_radius = unit_radius
+        self.generate(width, height, count_of_units, count_of_bases, kinds_of_bases, radius_of_base, unit_radius)
 
 
     def generate(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list,
@@ -28,61 +28,54 @@ class Engine:
 
         contains_x, contains_y = width, height
 
-        bungle = count_of_units // 11
-        for i in range(11):
-            rotate = (math.pi + math.pi / 20 * (i * 1)) % (2 * math.pi)
-
-            # coords = {'x': random() * contains_x, 'y': random() * contains_y}
-
-            for j in range(bungle):
-                y_c = (contains_y - radius_of_base * -1.0) - (2 * radius_of_base - (radius_of_base + j) * math.sin(rotate))
-                x_c = (contains_x - radius_of_base * -1.0) - (2 * radius_of_base - (radius_of_base + j) * math.cos(rotate))
-
-                coords = {'x': x_c, 'y': y_c}
-                speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
-                self.units.append(Unit(coords, rotate, "B",
-                                       kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed))
-
-
-#         for i in range(count_of_units):
-#             coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
+#         bungle = count_of_units // 11
+#         for i in range(11):
+#             rotate = (math.pi + math.pi / 22 * (i * 1)) % (2 * math.pi)
+# 
 #             # coords = {'x': random() * contains_x, 'y': random() * contains_y}
-#             self.units.append(Unit(coords, random() * 2 * math.pi, "A",
-#                                    kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5))
-#         coords = {'x': width / 7 * 2, 'y': height / 3 * 1}
-#         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
 # 
-#         coords = {'x': width / 7 * 2, 'y': height / 3 * 2}
-#         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
+#             for j in range(bungle):
+#                 y_c = (contains_y - radius_of_base * -1.0) - (2 * radius_of_base - (radius_of_base + j) * math.sin(rotate))
+#                 x_c = (contains_x - radius_of_base * -1.0) - (2 * radius_of_base - (radius_of_base + j) * math.cos(rotate))
 # 
-#         coords = {'x': width / 7 * 5, 'y': height / 10 * 5}
+#                 coords = {'x': x_c, 'y': y_c}
+#                 speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
+#                 self.units.append(Unit(coords, rotate, "B",
+#                                        kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed, self.unit_radius))
+# 
+#         coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5}
 #         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
 # 
+#         coords = {'x': radius_of_base, 'y': contains_y - radius_of_base}
+#         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
+# 
+#         coords = {'x': contains_x - radius_of_base, 'y': radius_of_base}
+#         self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
+# 
+#         coords = {'x': contains_x - radius_of_base, 'y': contains_y - radius_of_base}
+#         self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
+# 
 
-        coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5}
-        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
+        for i in range(count_of_units):
+#             coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3), 
+#                       'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
 
-        coords = {'x': radius_of_base, 'y': contains_y - radius_of_base}
-        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
-
-        coords = {'x': contains_x - radius_of_base, 'y': radius_of_base}
-        self.bases.append(Base(coords, 'B', 'A', 1, radius_of_base))
-
-        coords = {'x': contains_x - radius_of_base, 'y': contains_y - radius_of_base}
-        self.bases.append(Base(coords, 'A', 'B', 1, radius_of_base))
+            coords = {'x': random() * contains_x, 'y': random() * contains_y}
+            self.units.append(Unit(coords, random() * 2 * math.pi, "A",
+                                   kinds_of_bases, i, {'x': contains_x, 'y': contains_y},
+                                   self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.unit_radius))
 
 
-# undone magic!!!
-#         for i in range(count_of_bases):
-#            coords = {'x': random() * width, 'y': random() * height}
-#            kind = choice(kinds_of_bases)
-#            self.bases.append(Base(coords, kind, choice(list({*kinds_of_bases} - {kind})), i, radius_of_base))
+        for i in range(count_of_bases):
+           coords = {'x': random() * width, 'y': random() * height}
+           kind = choice(kinds_of_bases)
+           self.bases.append(Base(coords, kind, choice(list({*kinds_of_bases} - {kind})), i, radius_of_base))
 
 
     def check_encounter(self, unit: Unit):
         for base in self.bases:
             if math.sqrt((unit.coords['x'] - base.coords['x']) ** 2 +
-                         (unit.coords['y'] - base.coords['y']) ** 2) <= base.radius:
+                         (unit.coords['y'] - base.coords['y']) ** 2) <= base.radius + self.unit_radius + self.unit_radius / 2:
                 Engine.encounter(unit, base)
 
                 # not done, yet
@@ -115,38 +108,50 @@ class Engine:
                 dy = unit2.coords['y'] - unit.coords['y']
                 if dx == 0:
                     dx = 0.00000001
+
                 unit.rotation = math.atan(dy / dx)
+
                 if dx < 0:
+                    pass
                     unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
+
             self.check_responses(unit, key)
-#             unit.image[2].lines.append(
-#                 unit.image[0].create_line((unit2.coords['x'], unit2.coords['y']),
-#                                           (unit.coords['x'], unit.coords['y']),
-#                                           fill='green' if key == 'A' else 'blue'))
 
 
     def encounter(unit, base):
         unit.points[base.kind] = 0
         if base.kind == unit.destiny:
             unit.destiny = base.next
+            cos = (base.coords['x'] - unit.coords['x']) / (base.radius + unit.radius * 2)
+
             unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
+
+            # not done
+
+#             angle = math.acos(cos)
+#             if unit.coords['y'] < base.coords['y']:
+#                 angle = math.pi * 2 - angle
+# 
+#             difference = unit.rotation - angle
+#             unit.rotation = (unit.rotation + difference * 2) % (2 * math.pi)
+
 
 
     def forward(unit):
         dx = unit.speed * math.cos(unit.rotation)
         dy = unit.speed * math.sin(unit.rotation)
 
-        if unit.coords['x'] + dx >= unit.contains['x'] or unit.coords['x'] + dx <= 0:
+        if unit.coords['x'] + dx + unit.radius >= unit.contains['x'] or unit.coords['x'] + dx <= unit.radius:
             unit.rotation = math.pi - unit.rotation
             dx = unit.speed * math.cos(unit.rotation)
         
-        if unit.coords['y'] + dy >= unit.contains['y'] or unit.coords['y'] + dy <= 0:
+        if unit.coords['y'] + dy + unit.radius >= unit.contains['y'] or unit.coords['y'] + dy <= unit.radius:
             unit.rotation = 2 * math.pi - unit.rotation
             dy = unit.speed * math.sin(unit.rotation)
 
         unit.coords['x'] += dx
         unit.coords['y'] += dy
-        unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
+        # unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
         for key in unit.points.keys():
             # unit.points[key] = unit.points[key] + unit.speed
             unit.points[key] = unit.points[key] + 1
@@ -195,7 +200,7 @@ class Engine:
 
         for unit in self.units:
             coords = (unit.coords["x"], unit.coords["y"])
-            pygame.draw.circle(screen, self.UNIT_COLOR, coords, self.unit_size)
+            pygame.draw.circle(screen, self.UNIT_COLOR, coords, self.unit_radius)
 
 
 
@@ -207,7 +212,7 @@ class Engine:
         TIMER_TICK = pygame.USEREVENT + 1
         MOVE_EVENT = pygame.USEREVENT + 2
         CHECK_EVENT = pygame.USEREVENT + 3
-        pygame.time.set_timer(TIMER_TICK, 100)
+        pygame.time.set_timer(TIMER_TICK, 200)
         pygame.time.set_timer(MOVE_EVENT, 50)
         pygame.time.set_timer(CHECK_EVENT, 100)
 
