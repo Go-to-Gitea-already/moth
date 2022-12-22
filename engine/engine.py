@@ -93,18 +93,15 @@ class Engine:
         unit.points[base.kind] = 0
         if base.kind == unit.destiny:
             unit.destiny = base.next
-            cos = (base.coords['x'] - unit.coords['x']) / (base.radius + unit.radius * 2)
 
             unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
 
             # not done
 
-#             angle = math.acos(cos)
-#             if unit.coords['y'] < base.coords['y']:
-#                 angle = math.pi * 2 - angle
-# 
-#             difference = unit.rotation - angle
-#             unit.rotation = (unit.rotation + difference * 2) % (2 * math.pi)
+            cos = (base.coords['x'] - unit.coords['x']) / (base.radius + unit.radius)
+            angle = math.acos(cos)
+            difference = unit.rotation - angle
+            unit.rotation = (unit.rotation + difference * 2) % (2 * math.pi)
 
 
 
