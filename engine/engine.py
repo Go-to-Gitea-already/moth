@@ -46,7 +46,7 @@ class Engine:
     def check_encounter(self, unit: Unit):
         for base in self.bases:
             if math.sqrt((unit.coords['x'] - base.coords['x']) ** 2 +
-                         (unit.coords['y'] - base.coords['y']) ** 2) <= base.radius + self.unit_radius + self.unit_radius / 2:
+                         (unit.coords['y'] - base.coords['y']) ** 2) <= base.radius + self.unit_radius:
                 Engine.encounter(unit, base)
 
                 # not done, yet
@@ -122,7 +122,7 @@ class Engine:
 
         unit.coords['x'] += dx
         unit.coords['y'] += dy
-        # unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
+        unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
         for key in unit.points.keys():
             # unit.points[key] = unit.points[key] + unit.speed
             unit.points[key] = unit.points[key] + 1
@@ -171,13 +171,17 @@ class Engine:
 
         for unit in self.units:
             coords = (unit.coords["x"], unit.coords["y"])
-            pygame.draw.circle(screen, self.UNIT_COLOR, coords, self.unit_radius)
+            rect = (*coords, unit.radius * 2, unit.radius * 2)
+            # image = pygame.transform.scale(pygame.transform.rotate(self.sprites[unit.type], unit.rotation * 180 / math.pi), (unit.radius * 2, unit.radius * 2))
+            image = pygame.transform.rotate(self.sprites[unit.type], (unit.rotation - math.pi / 2) * 180 / math.pi)
+            self.screen.blit(image, rect)
+            # pygame.draw.circle(screen, self.UNIT_COLOR, coords, self.unit_radius)
 
 
 
     def start(self):
 
-        screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = pygame.display.set_mode((self.width, self.height))
         clock = pygame.time.Clock()
 
         TIMER_TICK = pygame.USEREVENT + 1
@@ -204,6 +208,6 @@ class Engine:
                     for unit in self.units:
                         self.check_encounter(unit)
 
-            self.render(screen)
+            self.render(self.screen)
             pygame.display.flip()
 

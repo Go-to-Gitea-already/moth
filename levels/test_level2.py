@@ -32,6 +32,7 @@ class Field(Engine):
         self.sprites = list()
 
         self.sprites.append(pygame.image.load('./data/spaceship.png'))
+        self.sprites.append(pygame.image.load('./data/red_spaceship.png'))
 
         contains_x, contains_y = self.width, self.height
 
@@ -50,6 +51,8 @@ class Field(Engine):
                 self.units.append(Unit(coords, rotate, "B",
                                        self.kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed, self.unit_radius))
 
+        self.units.append(Unit({'x': 100, 'y': 100}, 0.000001, "B",
+                                       self.kinds_of_bases, 222, {'x': contains_x, 'y': contains_y}, self.distance, self.units_speed, self.unit_radius, 1))
         coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5}
         self.bases.append(Base(coords, 'B', 'A', 1, self.base_radius))
 

@@ -4,7 +4,8 @@ import math
 class Unit:
 
     def __init__(self, coords: dict, rotation: float, destiny, bases: list, index: int, contains: dict,
-                 distance, speed: float, radius: float):
+                 distance, speed: float, radius: float, type=0):
+        self.type = type
         self.coords = coords
         self.destiny = destiny
         self.rotation = rotation
