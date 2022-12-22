@@ -172,10 +172,9 @@ class Engine:
         for unit in self.units:
             coords = (unit.coords["x"], unit.coords["y"])
             rect = (*coords, unit.radius * 2, unit.radius * 2)
-            # image = pygame.transform.scale(pygame.transform.rotate(self.sprites[unit.type], unit.rotation * 180 / math.pi), (unit.radius * 2, unit.radius * 2))
-            image = pygame.transform.rotate(self.sprites[unit.type], (unit.rotation - math.pi / 2) * 180 / math.pi)
+            rotation = -(unit.rotation) - math.pi / 2
+            image = pygame.transform.rotate(self.sprites[unit.type], rotation * 180 / math.pi)
             self.screen.blit(image, rect)
-            # pygame.draw.circle(screen, self.UNIT_COLOR, coords, self.unit_radius)
 
 
 

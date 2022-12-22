@@ -31,7 +31,9 @@ class Field(Engine):
 
         self.sprites = list()
 
-        self.sprites.append(pygame.image.load('./data/spaceship.png'))
+        im = pygame.image.load('./data/spaceship.png')
+        im = pygame.transform.scale(im, (self.unit_radius, self.unit_radius))
+        self.sprites.append(im)
 
         contains_x, contains_y = self.width, self.height
 
