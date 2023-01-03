@@ -1,9 +1,8 @@
 import pygame.image
-
-from engine.engine import Engine
+from main_code.engine import Engine
 import math
-from engine.unit import Unit
-from engine.base import Base
+from main_code.unit import Unit
+from main_code.base import Base
 
 
 class Field(Engine):
@@ -21,9 +20,9 @@ class Field(Engine):
         base_types = ['A', 'B']
         base_radius = 45
 
-        super().__init__(w, h, units_count, bases_count, base_types, base_radius, unit_radius, unit_speed, unit_hear_distance)
+        super().__init__(w, h, units_count, bases_count, base_types, base_radius, unit_radius, unit_speed,
+                         unit_hear_distance)
         self.generate()
-
 
     def generate(self):
         self.units = list()
@@ -44,23 +43,25 @@ class Field(Engine):
             # coords = {'x': random() * contains_x, 'y': random() * contains_y}
 
             for j in range(bungle):
-                y_c = (contains_y - self.base_radius * -1.0) - (2 * self.base_radius - (self.base_radius + j) * math.sin(rotate))
-                x_c = (contains_x - self.base_radius * -1.0) - (2 * self.base_radius - (self.base_radius + j) * math.cos(rotate))
+                y_c = (contains_y - self.radius_of_base * -1.0) - (2 * self.radius_of_base - (self.radius_of_base + j)
+                                                                   * math.sin(rotate))
+                x_c = (contains_x - self.radius_of_base * -1.0) - (2 * self.radius_of_base - (self.radius_of_base + j)
+                                                                   * math.cos(rotate))
 
                 coords = {'x': x_c, 'y': y_c}
                 speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
                 self.units.append(Unit(coords, rotate, "B",
-                                       self.kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed, self.unit_radius))
+                                       self.kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed,
+                                       self.unit_radius))
 
         coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5}
-        self.bases.append(Base(coords, 'B', 'A', 1, self.base_radius))
+        self.bases.append(Base(coords, 'B', 'A', 1, self.radius_of_base))
 
-        coords = {'x': self.base_radius, 'y': contains_y - self.base_radius}
-        self.bases.append(Base(coords, 'B', 'A', 1, self.base_radius))
+        coords = {'x': self.radius_of_base, 'y': contains_y - self.radius_of_base}
+        self.bases.append(Base(coords, 'B', 'A', 1, self.radius_of_base))
 
-        coords = {'x': contains_x - self.base_radius, 'y': self.base_radius}
-        self.bases.append(Base(coords, 'B', 'A', 1, self.base_radius))
+        coords = {'x': contains_x - self.radius_of_base, 'y': self.radius_of_base}
+        self.bases.append(Base(coords, 'B', 'A', 1, self.radius_of_base))
 
-        coords = {'x': contains_x - self.base_radius, 'y': contains_y - self.base_radius}
-        self.bases.append(Base(coords, 'A', 'B', 1, self.base_radius))
-
+        coords = {'x': contains_x - self.radius_of_base, 'y': contains_y - self.radius_of_base}
+        self.bases.append(Base(coords, 'A', 'B', 1, self.radius_of_base))
