@@ -14,7 +14,7 @@ def encounter(unit, base):
         # not done
 
 
-def forward(unit):
+def forward(unit: Unit):
     dx = unit.speed * math.cos(unit.rotation)
     dy = unit.speed * math.sin(unit.rotation)
 
@@ -32,6 +32,11 @@ def forward(unit):
     for key in unit.points.keys():
         # unit.points[key] = unit.points[key] + unit.speed
         unit.points[key] = unit.points[key] + 1
+
+
+def base_moving(base: Base, new_x, new_y):
+    base.coords['x'] = new_x
+    base.coords['y'] = new_y
 
 
 class Engine:
@@ -173,21 +178,41 @@ class Engine:
         pygame.time.set_timer(CHECK_EVENT, 100)
 
         running = True
+        moving_of_base = False
+        take = (0, 0)
+        moved_base = None
         while running:
             for event in pygame.event.get():
+
                 if event.type == pygame.QUIT:
                     running = False
 
-                elif event.type == TIMER_TICK:
+                if event.type == TIMER_TICK:
                     self.timer_tick()
 
-                elif event.type == MOVE_EVENT:
+                if event.type == MOVE_EVENT:
                     for unit in self.units:
                         forward(unit)
 
-                elif event.type == CHECK_EVENT:
+                if event.type == CHECK_EVENT:
                     for unit in self.units:
                         self.check_encounter(unit)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    take = (event.pos[0], event.pos[1])
+                    for base in self.bases:
+                        x, y = base.coords['x'], base.coords['y']
+                        if x - base.radius < take[0] < x + base.radius and y - base.radius < take[1] < y + base.radius:
+                            moving_of_base = True
+                            moved_base = base
+                            take = (take[0] - x, take[1] - y)
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    moving_of_base = False
+                    take = (0, 0)
+
+                if event.type == pygame.MOUSEMOTION and moving_of_base:
+                    base_moving(moved_base, event.pos[0] - take[0], event.pos[1] - take[1])
 
             self.render(self.screen)
             pygame.display.flip()
