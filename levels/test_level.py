@@ -3,6 +3,7 @@ from main_code.engine import Engine
 import math
 from main_code.unit import Unit
 from main_code.base import Base
+from main_code.menu import Menu
 
 
 class Field(Engine):

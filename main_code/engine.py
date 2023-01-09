@@ -197,7 +197,7 @@ class Engine:
 
         self.screen = pygame.display.set_mode((self.width, self.height))
 
-        # start_menu = Menu(self.screen, {"start": lambda: print("game started!"), "1": 1, "2": 2})
+        start_menu = Menu(self.screen, {"start": lambda: print("game started!")})
 
         TIMER_TICK = pygame.USEREVENT + 1
         MOVE_EVENT = pygame.USEREVENT + 2
