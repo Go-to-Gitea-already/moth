@@ -2,6 +2,7 @@ import math
 from random import choice, uniform, random
 from main_code.unit import Unit
 from main_code.base import Base
+from main_code.menu import Menu
 import pygame
 
 
@@ -169,7 +170,11 @@ class Engine:
             self.screen.blit(image, rect)
 
     def start(self):
+
         self.screen = pygame.display.set_mode((self.width, self.height))
+
+        # start_menu = Menu(self.screen, {"start": lambda: print("game started!"), "1": 1, "2": 2})
+
         TIMER_TICK = pygame.USEREVENT + 1
         MOVE_EVENT = pygame.USEREVENT + 2
         CHECK_EVENT = pygame.USEREVENT + 3
@@ -181,6 +186,7 @@ class Engine:
         moving_of_base = False
         take = (0, 0)
         moved_base = None
+
         while running:
             for event in pygame.event.get():
 
