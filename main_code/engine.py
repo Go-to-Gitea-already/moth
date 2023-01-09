@@ -2,6 +2,7 @@ import math
 from random import choice, uniform, random
 from main_code.unit import Unit
 from main_code.base import Base
+from main_code.wall import Wall
 import pygame
 
 
@@ -43,6 +44,7 @@ class Engine:
 
     units = list()
     bases = list()
+    walls = list()
     sprites = list()
 
     def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list,
@@ -61,6 +63,7 @@ class Engine:
     def generate(self):
         self.units = list()
         self.bases = list()
+        self.walls = list()
 
         contains_x, contains_y = self.width, self.height
 
@@ -90,6 +93,23 @@ class Engine:
 
                 self.check_responses(unit, base.kind)
                 self.check_requests(unit)
+
+        for wall in self.walls:
+            if wall.kind != 0:
+                a = ((unit.coords['x'] - wall.first_point[0]) ** 2 +
+                     (unit.coords['y'] - wall.first_point[1]) ** 2) ** 0.5
+                b = ((unit.coords['x'] - wall.second_point[0]) ** 2 +
+                     (unit.coords['y'] - wall.second_point[1]) ** 2) ** 0.5
+                c = wall.length
+                p = (a + b + c) / 2
+                s = (p * (p - a) * (p - b) * (p - c)) ** 0.5
+                path = s / c
+                if path <= wall.width + unit.radius and \
+                        (wall.first_point[0] < unit.coords['x'] < wall.second_point[0] or
+                         wall.first_point[0] > unit.coords['x'] > wall.second_point[0]) and \
+                        (wall.first_point[1] < unit.coords['y'] < wall.second_point[1] or
+                         wall.first_point[1] > unit.coords['y'] > wall.second_point[1]):
+                    unit.rotation += math.pi
 
     def check_responses(self, unit, key):
         for another_unit in set(self.units) - {unit}:
@@ -131,9 +151,13 @@ class Engine:
     BASE2_COLOR = (255, 0, 0)
     BASE3_COLOR = (255, 255, 0)
     BASE4_COLOR = (255, 0, 255)
+    WALL_COLOR = (255, 0, 128)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
+
+        for wall in self.walls:
+            pygame.draw.line(screen, self.WALL_COLOR, wall.first_point, wall.second_point, wall.width)
 
         for base in self.bases:
             coords = (base.coords["x"], base.coords["y"])
@@ -179,8 +203,11 @@ class Engine:
 
         running = True
         moving_of_base = False
-        take = (0, 0)
+        wall_building = False
+        take = None
         moved_base = None
+        wall_coord = None
+        wall_index = None
         while running:
             for event in pygame.event.get():
 
@@ -199,20 +226,35 @@ class Engine:
                         self.check_encounter(unit)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    take = (event.pos[0], event.pos[1])
-                    for base in self.bases:
-                        x, y = base.coords['x'], base.coords['y']
-                        if x - base.radius < take[0] < x + base.radius and y - base.radius < take[1] < y + base.radius:
-                            moving_of_base = True
-                            moved_base = base
-                            take = (take[0] - x, take[1] - y)
+                    if event.button == 1:
+                        take = (event.pos[0], event.pos[1])
+                        for base in self.bases:
+                            x, y = base.coords['x'], base.coords['y']
+                            if x - base.radius < take[0] < x + base.radius and \
+                                    y - base.radius < take[1] < y + base.radius:
+                                moving_of_base = True
+                                moved_base = base
+                                take = (take[0] - x, take[1] - y)
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    moving_of_base = False
-                    take = (0, 0)
+                    if event.button == 1:
+                        moving_of_base = False
+                        take = None
+                    if event.button == 3:
+                        if wall_building:
+                            self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 1)
+                        else:
+                            wall_coord = (event.pos[0], event.pos[1])
+                            wall_index = len(self.walls)
+                            self.walls.append(Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0))
+
+                        wall_building = not wall_building
 
                 if event.type == pygame.MOUSEMOTION and moving_of_base:
                     base_moving(moved_base, event.pos[0] - take[0], event.pos[1] - take[1])
+
+                if event.type == pygame.MOUSEMOTION and wall_building:
+                    self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0)
 
             self.render(self.screen)
             pygame.display.flip()

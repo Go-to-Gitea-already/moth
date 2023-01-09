@@ -1,6 +1,3 @@
-import math
-
-
 class Unit:
 
     def __init__(self, coords: dict, rotation: float, destiny, bases: list, index: int, contains: dict,
