@@ -2,7 +2,7 @@ import math
 from random import choice, uniform, random
 from main_code.unit import Unit
 from main_code.base import Base
-from main_code.menu import Menu
+from ui.buttons import Buttons as Menu
 from main_code.wall import Wall
 import pygame
 
@@ -60,6 +60,8 @@ class Engine:
         self.unit_radius = unit_radius
         self.count_of_units = count_of_units
         self.count_of_bases = count_of_bases
+
+        self.on_timer_tick = list()
 
     def generate(self):
         self.units = list()
@@ -144,8 +146,8 @@ class Engine:
             self.check_responses(unit, key)
 
     def timer_tick(self):
-        for unit in self.units:
-            self.check_requests(unit)
+        for f in self.on_timer_tick:
+            f()
 
     UNIT_COLOR = (0, 0, 255)
     BASE1_COLOR = (255, 128, 0)
@@ -197,12 +199,11 @@ class Engine:
 
         self.screen = pygame.display.set_mode((self.width, self.height))
 
-        start_menu = Menu(self.screen, {"start": lambda: print("game started!")})
+        start_menu = Menu(self, {"start": lambda: print("game started!")}, stop_main_process=True)
 
         TIMER_TICK = pygame.USEREVENT + 1
         MOVE_EVENT = pygame.USEREVENT + 2
         CHECK_EVENT = pygame.USEREVENT + 3
-        pygame.time.set_timer(TIMER_TICK, 200)
         pygame.time.set_timer(MOVE_EVENT, 50)
         pygame.time.set_timer(CHECK_EVENT, 100)
 
@@ -219,9 +220,6 @@ class Engine:
                 if event.type == pygame.QUIT:
                     running = False
 
-                if event.type == TIMER_TICK:
-                    self.timer_tick()
-
                 if event.type == MOVE_EVENT:
                     for unit in self.units:
                         forward(unit)
@@ -229,6 +227,9 @@ class Engine:
                 if event.type == CHECK_EVENT:
                     for unit in self.units:
                         self.check_encounter(unit)
+
+                    for unit in self.units:
+                        self.check_requests(unit)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -262,4 +263,8 @@ class Engine:
                     self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0)
 
             self.render(self.screen)
+
+            # запускаем всё остальное
+            self.timer_tick()
+
             pygame.display.flip()
