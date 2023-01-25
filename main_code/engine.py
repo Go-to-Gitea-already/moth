@@ -7,40 +7,6 @@ from main_code.wall import Wall
 import pygame
 
 
-def encounter(unit, base):
-    unit.points[base.kind] = 0
-    if base.kind == unit.destiny:
-        unit.destiny = base.next
-        unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
-
-        # not done
-
-
-def forward(unit: Unit):
-    dx = unit.speed * math.cos(unit.rotation)
-    dy = unit.speed * math.sin(unit.rotation)
-
-    if unit.coords['x'] + dx + unit.radius >= unit.contains['x'] or unit.coords['x'] + dx <= unit.radius:
-        unit.rotation = math.pi - unit.rotation
-        dx = unit.speed * math.cos(unit.rotation)
-
-    if unit.coords['y'] + dy + unit.radius >= unit.contains['y'] or unit.coords['y'] + dy <= unit.radius:
-        unit.rotation = 2 * math.pi - unit.rotation
-        dy = unit.speed * math.sin(unit.rotation)
-
-    unit.coords['x'] += dx
-    unit.coords['y'] += dy
-    unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
-    for key in unit.points.keys():
-        # unit.points[key] = unit.points[key] + unit.speed
-        unit.points[key] = unit.points[key] + 1
-
-
-def base_moving(base: Base, new_x, new_y):
-    base.coords['x'] = new_x
-    base.coords['y'] = new_y
-
-
 class Engine:
 
     units = list()
@@ -83,69 +49,6 @@ class Engine:
             coords = {'x': random() * self.width, 'y': random() * self.height}
             kind = choice(self.kinds_of_bases)
             self.bases.append(Base(coords, kind, choice(list({*self.kinds_of_bases} - {kind})), i, self.radius_of_base))
-
-    def check_encounter(self, unit: Unit):
-        for base in self.bases:
-            if math.sqrt((unit.coords['x'] - base.coords['x']) ** 2 +
-                         (unit.coords['y'] - base.coords['y']) ** 2) <= base.radius + self.unit_radius:
-                encounter(unit, base)
-
-                # not done, yet
-
-                self.check_responses(unit, base.kind)
-                self.check_requests(unit)
-
-        for wall in self.walls:
-            if wall.kind != 0:
-                a = ((unit.coords['x'] - wall.first_point[0]) ** 2 +
-                     (unit.coords['y'] - wall.first_point[1]) ** 2) ** 0.5
-                b = ((unit.coords['x'] - wall.second_point[0]) ** 2 +
-                     (unit.coords['y'] - wall.second_point[1]) ** 2) ** 0.5
-                c = wall.length
-                p = (a + b + c) / 2
-                s = (p * (p - a) * (p - b) * (p - c)) ** 0.5
-                path = s / c
-                if path <= wall.width + unit.radius and \
-                        (wall.first_point[0] < unit.coords['x'] < wall.second_point[0] or
-                         wall.first_point[0] > unit.coords['x'] > wall.second_point[0]) and \
-                        (wall.first_point[1] < unit.coords['y'] < wall.second_point[1] or
-                         wall.first_point[1] > unit.coords['y'] > wall.second_point[1]):
-                    unit.rotation += math.pi
-
-    def check_responses(self, unit, key):
-        for another_unit in set(self.units) - {unit}:
-            if ((another_unit.coords['x'] - unit.coords['x']) ** 2 + (
-                    another_unit.coords['y'] - unit.coords['y']) ** 2) ** 0.5 < self.distance:
-                self.listen(another_unit, unit, key)
-
-    def check_requests(self, unit):
-        for another_unit in set(self.units) - {unit}:
-            if math.sqrt((another_unit.coords['x'] - unit.coords['x']) ** 2 + (
-                    another_unit.coords['y'] - unit.coords['y']) ** 2) < self.distance:
-                for key in self.kinds_of_bases:
-                    self.listen(unit, another_unit, key)
-
-    def listen(self, unit, unit2, key):
-        if unit.points[key] > unit2.points[key] + unit.distance * 1:
-            unit.points[key] = unit2.points[key] + unit.distance
-
-            if key == unit.destiny:
-                dx = unit2.coords['x'] - unit.coords['x']
-                dy = unit2.coords['y'] - unit.coords['y']
-                if dx == 0:
-                    dx = 0.00000001
-
-                unit.rotation = math.atan(dy / dx)
-
-                if dx < 0:
-                    pass
-                    unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
-
-            self.check_responses(unit, key)
-
-    def timer_tick(self):
-        for unit in self.units:
-            self.check_requests(unit)
 
     UNIT_COLOR = (0, 0, 255)
     BASE1_COLOR = (255, 128, 0)
@@ -199,12 +102,8 @@ class Engine:
 
         start_menu = Menu(self.screen, {"start": lambda: print("game started!")})
 
-        TIMER_TICK = pygame.USEREVENT + 1
-        MOVE_EVENT = pygame.USEREVENT + 2
-        CHECK_EVENT = pygame.USEREVENT + 3
-        pygame.time.set_timer(TIMER_TICK, 200)
-        pygame.time.set_timer(MOVE_EVENT, 50)
-        pygame.time.set_timer(CHECK_EVENT, 100)
+        UNIT_UPDATE = pygame.USEREVENT + 4
+        pygame.time.set_timer(UNIT_UPDATE, 50)
 
         running = True
         moving_of_base = False
@@ -213,28 +112,22 @@ class Engine:
         moved_base = None
         wall_coord = None
         wall_index = None
+
         while running:
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
                     running = False
 
-                if event.type == TIMER_TICK:
-                    self.timer_tick()
-
-                if event.type == MOVE_EVENT:
+                if event.type == UNIT_UPDATE:
                     for unit in self.units:
-                        forward(unit)
-
-                if event.type == CHECK_EVENT:
-                    for unit in self.units:
-                        self.check_encounter(unit)
+                        unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
+                    if event.button == 3:
                         take = (event.pos[0], event.pos[1])
                         for base in self.bases:
-                            x, y = base.coords['x'], base.coords['y']
+                            x, y = base.coords[0], base.coords[0]
                             if x - base.radius < take[0] < x + base.radius and \
                                     y - base.radius < take[1] < y + base.radius:
                                 moving_of_base = True
@@ -242,24 +135,25 @@ class Engine:
                                 take = (take[0] - x, take[1] - y)
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if event.button == 1:
+                    if event.button == 3:
                         moving_of_base = False
                         take = None
-                    if event.button == 3:
+                    if event.button == 1:
                         if wall_building:
-                            self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 1)
+                            if self.walls[wall_index].length >= 1:
+                                self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 10, 1)
                         else:
                             wall_coord = (event.pos[0], event.pos[1])
                             wall_index = len(self.walls)
-                            self.walls.append(Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0))
+                            self.walls.append(Wall(wall_coord, (event.pos[0], event.pos[1]), 10, 0))
 
                         wall_building = not wall_building
 
                 if event.type == pygame.MOUSEMOTION and moving_of_base:
-                    base_moving(moved_base, event.pos[0] - take[0], event.pos[1] - take[1])
+                    moved_base.move(event.pos[0] - take[0], event.pos[1] - take[1])
 
                 if event.type == pygame.MOUSEMOTION and wall_building:
-                    self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0)
+                    self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 10, 0)
 
             self.render(self.screen)
             pygame.display.flip()
