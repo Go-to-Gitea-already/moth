@@ -26,6 +26,7 @@ class Engine:
         self.unit_radius = unit_radius
         self.count_of_units = count_of_units
         self.count_of_bases = count_of_bases
+        self.all_sprites = pygame.sprite.Group()
 
     def generate(self):
         self.units = list()
@@ -34,19 +35,17 @@ class Engine:
 
         contains_x, contains_y = self.width, self.height
 
+        image = './data/spaceship.png'
+
         for i in range(self.count_of_units):
 
-            # coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3),
-            # 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
-
-            coords = {'x': random() * contains_x, 'y': random() * contains_y}
-            self.units.append(Unit(coords, random() * 2 * math.pi, "A",
-                                   self.kinds_of_bases, i, {'x': contains_x, 'y': contains_y},
-                                   self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5,
-                                   self.unit_radius))
+            coords = (random() * self.width, random() * self.height)
+            self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
+                                   self.distance, image, i, self.unit_radius, random() * 2 * math.pi,
+                                   random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
 
         for i in range(self.count_of_bases):
-            coords = {'x': random() * self.width, 'y': random() * self.height}
+            coords = (random() * self.width, random() * self.height)
             kind = choice(self.kinds_of_bases)
             self.bases.append(Base(coords, kind, choice(list({*self.kinds_of_bases} - {kind})), i, self.radius_of_base))
 

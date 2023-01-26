@@ -6,7 +6,7 @@ from os.path import join as os_join
 
 class Base(Sprite):
 
-    def __init__(self, coords: tuple[float, float], image: str, index: int, kind, next_base, radius: float,
+    def __init__(self, coords: tuple, image: str, index: int, kind, next_base, radius: float,
                  sprites_group: Group):
 
         self.image = load(os_join('data', image))

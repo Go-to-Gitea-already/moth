@@ -8,8 +8,19 @@ from random import uniform
 
 class Unit(Sprite):
 
-    def __init__(self, bases: list, contains: dict, coords: tuple[float, float], destiny, distance: float, image: str,
-                 index: int, radius: float, rotation: float, speed: float, sprites_group: Group, unit_type: int):
+    def __init__(self,
+                 bases: list,
+                 contains: dict,
+                 coords: tuple,
+                 destiny: str,
+                 distance: float,
+                 image: str,
+                 index: int,
+                 radius: float,
+                 rotation: float,
+                 speed: float,
+                 sprites_group: Group,
+                 unit_type: int):
 
         self.image = load(os_join('data', image))
 
