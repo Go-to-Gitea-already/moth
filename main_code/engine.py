@@ -3,7 +3,9 @@ from random import choice, uniform, random
 from main_code.unit import Unit
 from main_code.base import Base
 from ui.buttons import Buttons as Menu
+from ui.drop_down_menu import DropDownMenu
 from main_code.wall import Wall
+
 import pygame
 
 
@@ -241,11 +243,32 @@ class Engine:
                                 moving_of_base = True
                                 moved_base = base
                                 take = (take[0] - x, take[1] - y)
+                                break
+
+                        else:
+                            coords = {'x': event.pos[0], 'y': event.pos[1]}
+                            contains_x, contains_y = self.width, self.height
+
+                            DropDownMenu(self, {
+                                '0': lambda: self.units.append(Unit(coords, random() * 2 * math.pi, 
+                                                                    "A", self.kinds_of_bases, len(self.units), 
+                                                                    {'x': contains_x, 'y': contains_y}, 
+                                                                    self.distance, 
+                                                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5,
+                                                                    self.unit_radius)),
+                                '1': lambda: self.units.append(Unit(coords, random() * 2 * math.pi, 
+                                                                    "A", self.kinds_of_bases, len(self.units), 
+                                                                    {'x': contains_x, 'y': contains_y}, 
+                                                                    self.distance, 
+                                                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5,
+                                                                    self.unit_radius, 1))},
+                                event.pos[0], event.pos[1])
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         moving_of_base = False
                         take = None
+
                     if event.button == 3:
                         if wall_building:
                             self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 1)
