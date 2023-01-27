@@ -7,16 +7,16 @@ class DropDownMenu(Buttons):
         if kvargs.get('rect') is None:
             rect = pygame.Rect((0, 0), (0, 0))
 
-            height = len(choices.keys()) * button_h * 1.2
+            height = len(choices.keys()) * button_h * 1.9
             width = button_w
 
-            rect.x = x + width
+            rect.left = x + button_w
             rect.y = y - height // 2
 
             rect.height = height
             rect.width = width
 
-            kvargs['rect'] = rect
+#             kvargs['rect'] = rect
 
-        super().__init__(engine, choices, button_h=button_h, button_w=button_w, **kvargs)
+        super().__init__(engine, choices, rect=rect, button_h=button_h, button_w=button_w, **kvargs)
 

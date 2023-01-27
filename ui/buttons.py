@@ -33,10 +33,14 @@ class Buttons:
         x0 = self.rect.left
         x1 = self.rect.right
 
-        x = self.rect.center[1]
+        x = self.rect.center[0]
+
+        # print(x0, x, x1)
 
         y0 = self.rect.top
         y1 = self.rect.bottom
+
+        # print(y0, self.rect.y, y1)
 
         l = len(self.choices)
 
