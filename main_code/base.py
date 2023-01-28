@@ -9,10 +9,6 @@ class Base(Sprite):
     def __init__(self, coords: tuple, image: str, index: int, kind, next_base, radius: float,
                  sprites_group: Group):
 
-        self.image = load(os_join('data', image))
-
-        self.mask = from_surface(self.image)
-
         super().__init__(sprites_group)
 
         self.coords = coords

@@ -3,6 +3,7 @@ from main_code.engine import Engine
 import math
 from main_code.unit import Unit
 from main_code.base import Base
+from random import random
 
 
 class Field(Engine):
@@ -37,10 +38,12 @@ class Field(Engine):
         contains_x, contains_y = self.width, self.height
 
         bungle = self.count_of_units // 11
+
+        unit_image = './data/spaceship.png'
+        base_image = './data/red_spaceship.png'
+
         for i in range(11):
             rotate = (math.pi + math.pi / 20 * (i * 1)) % (2 * math.pi)
-
-            # coords = {'x': random() * contains_x, 'y': random() * contains_y}
 
             for j in range(bungle):
                 y_c = (contains_y - self.radius_of_base * -1.0) - (2 * self.radius_of_base - (self.radius_of_base + j)
@@ -48,20 +51,20 @@ class Field(Engine):
                 x_c = (contains_x - self.radius_of_base * -1.0) - (2 * self.radius_of_base - (self.radius_of_base + j)
                                                                    * math.cos(rotate))
 
-                coords = {'x': x_c, 'y': y_c}
                 speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
-                self.units.append(Unit(coords, rotate, "B",
-                                       self.kinds_of_bases, i, {'x': contains_x, 'y': contains_y}, self.distance, speed,
-                                       self.unit_radius))
+                coords = (x_c, y_c)
+                self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "B",
+                                       self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
+                                       speed, self.all_sprites, 0))
 
-        coords = {'x': contains_x - (contains_x ** 2 / 2) ** 0.5, 'y': contains_y - (contains_y ** 2 / 2) ** 0.5}
-        self.bases.append(Base(coords, 'B', 'A', 1, self.radius_of_base))
+        coords = (contains_x - (contains_x ** 2 / 2) ** 0.5, contains_y - (contains_y ** 2 / 2) ** 0.5)
+        self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))
 
-        coords = {'x': self.radius_of_base, 'y': contains_y - self.radius_of_base}
-        self.bases.append(Base(coords, 'B', 'A', 1, self.radius_of_base))
+        coords = (self.radius_of_base, contains_y - self.radius_of_base)
+        self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))
 
-        coords = {'x': contains_x - self.radius_of_base, 'y': self.radius_of_base}
-        self.bases.append(Base(coords, 'B', 'A', 1, self.radius_of_base))
+        coords = (contains_x - self.radius_of_base, self.radius_of_base)
+        self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))
 
-        coords = {'x': contains_x - self.radius_of_base, 'y': contains_y - self.radius_of_base}
-        self.bases.append(Base(coords, 'A', 'B', 1, self.radius_of_base))
+        coords = (contains_x - self.radius_of_base, contains_y - self.radius_of_base)
+        self.bases.append(Base(coords, base_image, 1, 'A', 'B', self.radius_of_base, self.all_sprites))

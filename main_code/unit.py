@@ -8,23 +8,8 @@ from random import uniform
 
 class Unit(Sprite):
 
-    def __init__(self,
-                 bases: list,
-                 contains: dict,
-                 coords: tuple,
-                 destiny: str,
-                 distance: float,
-                 image: str,
-                 index: int,
-                 radius: float,
-                 rotation: float,
-                 speed: float,
-                 sprites_group: Group,
-                 unit_type: int):
-
-        self.image = load(os_join('data', image))
-
-        self.mask = from_surface(self.image)
+    def __init__(self, bases: list, contains: dict, coords: tuple, destiny: str, distance: float, image: str,
+                 index: int, radius: float, rotation: float, speed: float, sprites_group: Group, unit_type: int):
 
         self.points = dict({*map(lambda x: (x, distance + 1), bases)})
 
@@ -116,8 +101,7 @@ class Unit(Sprite):
             self.rotation = 2 * pi - self.rotation
             dy = self.speed * sin(self.rotation)
 
-        self.coords[0] += dx
-        self.coords[1] += dy
+        self.coords = (self.coords[0] + dx, self.coords[1] + dy)
         self.rotation = (self.rotation + pi / 144 * uniform(-1, 1)) % (2 * pi)
         for key in self.points.keys():
             self.points[key] = self.points[key] + 1

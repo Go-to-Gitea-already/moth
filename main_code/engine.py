@@ -35,19 +35,21 @@ class Engine:
 
         contains_x, contains_y = self.width, self.height
 
-        image = './data/spaceship.png'
+        unit_image = './data/spaceship.png'
+        base_image = './data/red_spaceship.png'
 
         for i in range(self.count_of_units):
 
             coords = (random() * self.width, random() * self.height)
             self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
-                                   self.distance, image, i, self.unit_radius, random() * 2 * math.pi,
+                                   self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
 
         for i in range(self.count_of_bases):
             coords = (random() * self.width, random() * self.height)
             kind = choice(self.kinds_of_bases)
-            self.bases.append(Base(coords, kind, choice(list({*self.kinds_of_bases} - {kind})), i, self.radius_of_base))
+            self.bases.append(Base(coords, base_image, i, kind, choice(list({*self.kinds_of_bases} - {kind})),
+                                   self.radius_of_base, self.all_sprites))
 
     UNIT_COLOR = (0, 0, 255)
     BASE1_COLOR = (255, 128, 0)
@@ -63,7 +65,7 @@ class Engine:
             pygame.draw.line(screen, self.WALL_COLOR, wall.first_point, wall.second_point, wall.width)
 
         for base in self.bases:
-            coords = (base.coords["x"], base.coords["y"])
+            coords = (base.coords[0], base.coords[1])
             color = (255, 255, 255)
             if base.kind == 'A':
                 color = self.BASE1_COLOR
@@ -89,7 +91,7 @@ class Engine:
             pygame.draw.circle(screen, color, coords, self.radius_of_base / 2)
 
         for unit in self.units:
-            coords = (unit.coords["x"], unit.coords["y"])
+            coords = (unit.coords[0], unit.coords[1])
             rect = (*coords, unit.radius * 2, unit.radius * 2)
             rotation = -unit.rotation - math.pi / 2
             image = pygame.transform.rotate(self.sprites[unit.unit_type], rotation * 180 / math.pi)
@@ -140,11 +142,12 @@ class Engine:
                     if event.button == 1:
                         if wall_building:
                             if self.walls[wall_index].length >= 1:
-                                self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 10, 1)
+                                self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 1,
+                                                              self.all_sprites, 10)
                         else:
                             wall_coord = (event.pos[0], event.pos[1])
                             wall_index = len(self.walls)
-                            self.walls.append(Wall(wall_coord, (event.pos[0], event.pos[1]), 10, 0))
+                            self.walls.append(Wall(wall_coord, (event.pos[0], event.pos[1]), 0, self.all_sprites, 10))
 
                         wall_building = not wall_building
 
@@ -152,7 +155,7 @@ class Engine:
                     moved_base.move(event.pos[0] - take[0], event.pos[1] - take[1])
 
                 if event.type == pygame.MOUSEMOTION and wall_building:
-                    self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 10, 0)
+                    self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 0, self.all_sprites, 10)
 
             self.render(self.screen)
             pygame.display.flip()
