@@ -117,6 +117,10 @@ class InputUIDefineLevel(Engine):
         pass
 
 
-class DrawDefineLevel(Engine):
-    pass
+class GUIDefineLevel(Engine):
+    def __init__(self):
+        super().__init__(*args, **kvargs)
+
+        pygame.init()
+        self.draw_variables = Variables()
 
