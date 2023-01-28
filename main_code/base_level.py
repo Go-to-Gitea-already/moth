@@ -76,11 +76,11 @@ class InputUIDefineLevel(Engine):
 
                 if event.button == 3:
                     if self.input_variables.wall_building:
-                        self.walls[self.input_variables.wall_index] = Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 2, self.all_sprites, 1)
+                        self.walls[self.input_variables.wall_index] = Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 1, self.all_sprites, 1)
                     else:
                         self.input_variables.wall_coord = (event.pos[0], event.pos[1])
                         self.input_variables.wall_index = len(self.walls)
-                        self.walls.append(Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 2, self.all_sprites, 0))
+                        self.walls.append(Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 0, self.all_sprites, 1))
 
                     self.input_variables.wall_building = not self.input_variables.wall_building
 
@@ -88,7 +88,7 @@ class InputUIDefineLevel(Engine):
                 base_moving(self.input_variables.moved_base, event.pos[0] - self.input_variables.take[0], event.pos[1] - self.input_variables.take[1])
 
             if event.type == pygame.MOUSEMOTION and self.input_variables.wall_building:
-                self.walls[self.input_variables.wall_index] = Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 2, self.all_sprites, 0)
+                self.walls[self.input_variables.wall_index] = Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 0, self.all_sprites, 1)
 
             # клавиши
             if event.type == pygame.KEYDOWN:
