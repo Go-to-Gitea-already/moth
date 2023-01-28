@@ -58,8 +58,6 @@ class Engine:
     def timer_tick(self):
         for f in self.on_timer_tick:
             f()
-            self.bases.append(Base(coords, base_image, i, kind, choice(list({*self.kinds_of_bases} - {kind})),
-                                   self.radius_of_base, self.all_sprites))
 
     UNIT_COLOR = (0, 0, 255)
     BASE1_COLOR = (255, 128, 0)
@@ -118,8 +116,6 @@ class Engine:
 
         TIMER_TICK = pygame.USEREVENT + 1
         self.running = True
-        UNIT_UPDATE = pygame.USEREVENT + 4
-        pygame.time.set_timer(UNIT_UPDATE, 50)
 
         while self.running:
             #!
