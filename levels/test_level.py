@@ -1,12 +1,13 @@
 import pygame.image
 from main_code.engine import Engine
+from main_code.base_level import InputUIDefineLevel
 import math
 from main_code.unit import Unit
 from main_code.base import Base
 from main_code.menu import Menu
 
 
-class Field(Engine):
+class Field(InputUIDefineLevel):
     def __init__(self):
 
         w = 600

@@ -78,7 +78,9 @@ class Buttons:
                 if not self.is_static:
                     self.running = False
 
-                return None
+                return True
+
+        return False
 
 
     def make_choice(self, choices: dict):
@@ -88,18 +90,28 @@ class Buttons:
         self.running = True
 
         def on_timer_tick():
-            for e in pygame.event.get():
+            if self.stop_main_process:
+                events = pygame.event.get()
+
+            else:
+                events = self.engine.events
+
+            for e in events:
                 if e.type == pygame.QUIT:
                     exit()
 
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     x, y = e.pos
-                    self.check_buttons(x, y)
+
+                    # ах шит
+                    if self.check_buttons(x, y):
+                        if not self.stop_main_process:
+                            self.engine.events.remove(e)
 
             self.draw()
 
+            # говнокод
             if not (self.running or self.stop_main_process):
-                # говнокод
                 self.engine.on_timer_tick.remove(on_timer_tick)
 
         if self.stop_main_process:

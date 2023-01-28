@@ -63,6 +63,7 @@ class Engine:
         self.count_of_units = count_of_units
         self.count_of_bases = count_of_bases
 
+        #!
         self.on_timer_tick = list()
 
     def generate(self):
@@ -147,6 +148,7 @@ class Engine:
 
             self.check_responses(unit, key)
 
+    #!
     def timer_tick(self):
         for f in self.on_timer_tick:
             f()
@@ -199,94 +201,22 @@ class Engine:
 
     def start(self):
 
+        # нужно для нормального функционирования стартового меню
+        self.events = pygame.event.get()
+
         self.screen = pygame.display.set_mode((self.width, self.height))
 
         start_menu = Menu(self, {"start": lambda: print("game started!")}, stop_main_process=True)
 
         TIMER_TICK = pygame.USEREVENT + 1
-        MOVE_EVENT = pygame.USEREVENT + 2
-        CHECK_EVENT = pygame.USEREVENT + 3
-        pygame.time.set_timer(MOVE_EVENT, 50)
-        pygame.time.set_timer(CHECK_EVENT, 100)
+        self.running = True
 
-        running = True
-        moving_of_base = False
-        wall_building = False
-        take = None
-        moved_base = None
-        wall_coord = None
-        wall_index = None
-        while running:
-            for event in pygame.event.get():
-
-                if event.type == pygame.QUIT:
-                    running = False
-
-                if event.type == MOVE_EVENT:
-                    for unit in self.units:
-                        forward(unit)
-
-                if event.type == CHECK_EVENT:
-                    for unit in self.units:
-                        self.check_encounter(unit)
-
-                    for unit in self.units:
-                        self.check_requests(unit)
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        take = (event.pos[0], event.pos[1])
-                        for base in self.bases:
-                            x, y = base.coords['x'], base.coords['y']
-                            if x - base.radius < take[0] < x + base.radius and \
-                                    y - base.radius < take[1] < y + base.radius:
-                                moving_of_base = True
-                                moved_base = base
-                                take = (take[0] - x, take[1] - y)
-                                break
-
-                        else:
-                            coords = {'x': event.pos[0], 'y': event.pos[1]}
-                            contains_x, contains_y = self.width, self.height
-
-                            DropDownMenu(self, {
-                                '0': lambda: self.units.append(Unit(coords, random() * 2 * math.pi, 
-                                                                    "A", self.kinds_of_bases, len(self.units), 
-                                                                    {'x': contains_x, 'y': contains_y}, 
-                                                                    self.distance, 
-                                                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5,
-                                                                    self.unit_radius)),
-                                '1': lambda: self.units.append(Unit(coords, random() * 2 * math.pi, 
-                                                                    "A", self.kinds_of_bases, len(self.units), 
-                                                                    {'x': contains_x, 'y': contains_y}, 
-                                                                    self.distance, 
-                                                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5,
-                                                                    self.unit_radius, 1))},
-                                event.pos[0], event.pos[1])
-
-                if event.type == pygame.MOUSEBUTTONUP:
-                    if event.button == 1:
-                        moving_of_base = False
-                        take = None
-
-                    if event.button == 3:
-                        if wall_building:
-                            self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 1)
-                        else:
-                            wall_coord = (event.pos[0], event.pos[1])
-                            wall_index = len(self.walls)
-                            self.walls.append(Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0))
-
-                        wall_building = not wall_building
-
-                if event.type == pygame.MOUSEMOTION and moving_of_base:
-                    base_moving(moved_base, event.pos[0] - take[0], event.pos[1] - take[1])
-
-                if event.type == pygame.MOUSEMOTION and wall_building:
-                    self.walls[wall_index] = Wall(wall_coord, (event.pos[0], event.pos[1]), 2, 0)
-
+        while self.running:
+            #!
+            self.events = pygame.event.get()
             self.render(self.screen)
 
+            #!
             # запускаем всё остальное
             self.timer_tick()
 
