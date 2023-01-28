@@ -48,6 +48,11 @@ class InputUIDefineLevel(Engine):
                         pass
 
 
+           if event.type == UNIT_UPDATE:
+                for unit in self.units:
+                    unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
+ 
+
             if event.type == pygame.QUIT:
                 self.running = False
 

@@ -9,40 +9,6 @@ from main_code.wall import Wall
 import pygame
 
 
-def encounter(unit, base):
-    unit.points[base.kind] = 0
-    if base.kind == unit.destiny:
-        unit.destiny = base.next
-        unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
-
-        # not done
-
-
-def forward(unit: Unit):
-    dx = unit.speed * math.cos(unit.rotation)
-    dy = unit.speed * math.sin(unit.rotation)
-
-    if unit.coords['x'] + dx + unit.radius >= unit.contains['x'] or unit.coords['x'] + dx <= unit.radius:
-        unit.rotation = math.pi - unit.rotation
-        dx = unit.speed * math.cos(unit.rotation)
-
-    if unit.coords['y'] + dy + unit.radius >= unit.contains['y'] or unit.coords['y'] + dy <= unit.radius:
-        unit.rotation = 2 * math.pi - unit.rotation
-        dy = unit.speed * math.sin(unit.rotation)
-
-    unit.coords['x'] += dx
-    unit.coords['y'] += dy
-    unit.rotation = (unit.rotation + math.pi / 144 * uniform(-1, 1)) % (2 * math.pi)
-    for key in unit.points.keys():
-        # unit.points[key] = unit.points[key] + unit.speed
-        unit.points[key] = unit.points[key] + 1
-
-
-def base_moving(base: Base, new_x, new_y):
-    base.coords['x'] = new_x
-    base.coords['y'] = new_y
-
-
 class Engine:
 
     units = list()
@@ -62,6 +28,7 @@ class Engine:
         self.unit_radius = unit_radius
         self.count_of_units = count_of_units
         self.count_of_bases = count_of_bases
+        self.all_sprites = pygame.sprite.Group()
 
         #!
         self.on_timer_tick = list()
@@ -73,85 +40,26 @@ class Engine:
 
         contains_x, contains_y = self.width, self.height
 
+        unit_image = './data/spaceship.png'
+        base_image = './data/red_spaceship.png'
+
         for i in range(self.count_of_units):
 
-            # coords = {'x': random() * radius_of_base + (contains_x - radius_of_base * 3),
-            # 'y': random() * radius_of_base + (contains_y - radius_of_base * 3)}
-
-            coords = {'x': random() * contains_x, 'y': random() * contains_y}
-            self.units.append(Unit(coords, random() * 2 * math.pi, "A",
-                                   self.kinds_of_bases, i, {'x': contains_x, 'y': contains_y},
-                                   self.distance, random() * self.units_speed / 5 * 4 + self.units_speed / 5,
-                                   self.unit_radius))
+            coords = (random() * self.width, random() * self.height)
+            self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
+                                   self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
+                                   random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
 
         for i in range(self.count_of_bases):
-            coords = {'x': random() * self.width, 'y': random() * self.height}
+            coords = (random() * self.width, random() * self.height)
             kind = choice(self.kinds_of_bases)
             self.bases.append(Base(coords, kind, choice(list({*self.kinds_of_bases} - {kind})), i, self.radius_of_base))
 
-    def check_encounter(self, unit: Unit):
-        for base in self.bases:
-            if math.sqrt((unit.coords['x'] - base.coords['x']) ** 2 +
-                         (unit.coords['y'] - base.coords['y']) ** 2) <= base.radius + self.unit_radius:
-                encounter(unit, base)
-
-                # not done, yet
-
-                self.check_responses(unit, base.kind)
-                self.check_requests(unit)
-
-        for wall in self.walls:
-            if wall.kind != 0:
-                a = ((unit.coords['x'] - wall.first_point[0]) ** 2 +
-                     (unit.coords['y'] - wall.first_point[1]) ** 2) ** 0.5
-                b = ((unit.coords['x'] - wall.second_point[0]) ** 2 +
-                     (unit.coords['y'] - wall.second_point[1]) ** 2) ** 0.5
-                c = wall.length
-                p = (a + b + c) / 2
-                s = (p * (p - a) * (p - b) * (p - c)) ** 0.5
-                path = s / c
-                if path <= wall.width + unit.radius and \
-                        (wall.first_point[0] < unit.coords['x'] < wall.second_point[0] or
-                         wall.first_point[0] > unit.coords['x'] > wall.second_point[0]) and \
-                        (wall.first_point[1] < unit.coords['y'] < wall.second_point[1] or
-                         wall.first_point[1] > unit.coords['y'] > wall.second_point[1]):
-                    unit.rotation += math.pi
-
-    def check_responses(self, unit, key):
-        for another_unit in set(self.units) - {unit}:
-            if ((another_unit.coords['x'] - unit.coords['x']) ** 2 + (
-                    another_unit.coords['y'] - unit.coords['y']) ** 2) ** 0.5 < self.distance:
-                self.listen(another_unit, unit, key)
-
-    def check_requests(self, unit):
-        for another_unit in set(self.units) - {unit}:
-            if math.sqrt((another_unit.coords['x'] - unit.coords['x']) ** 2 + (
-                    another_unit.coords['y'] - unit.coords['y']) ** 2) < self.distance:
-                for key in self.kinds_of_bases:
-                    self.listen(unit, another_unit, key)
-
-    def listen(self, unit, unit2, key):
-        if unit.points[key] > unit2.points[key] + unit.distance * 1:
-            unit.points[key] = unit2.points[key] + unit.distance
-
-            if key == unit.destiny:
-                dx = unit2.coords['x'] - unit.coords['x']
-                dy = unit2.coords['y'] - unit.coords['y']
-                if dx == 0:
-                    dx = 0.00000001
-
-                unit.rotation = math.atan(dy / dx)
-
-                if dx < 0:
-                    pass
-                    unit.rotation = (unit.rotation + math.pi) % (2 * math.pi)
-
-            self.check_responses(unit, key)
-
-    #!
     def timer_tick(self):
         for f in self.on_timer_tick:
             f()
+            self.bases.append(Base(coords, base_image, i, kind, choice(list({*self.kinds_of_bases} - {kind})),
+                                   self.radius_of_base, self.all_sprites))
 
     UNIT_COLOR = (0, 0, 255)
     BASE1_COLOR = (255, 128, 0)
@@ -167,7 +75,7 @@ class Engine:
             pygame.draw.line(screen, self.WALL_COLOR, wall.first_point, wall.second_point, wall.width)
 
         for base in self.bases:
-            coords = (base.coords["x"], base.coords["y"])
+            coords = (base.coords[0], base.coords[1])
             color = (255, 255, 255)
             if base.kind == 'A':
                 color = self.BASE1_COLOR
@@ -193,7 +101,7 @@ class Engine:
             pygame.draw.circle(screen, color, coords, self.radius_of_base / 2)
 
         for unit in self.units:
-            coords = (unit.coords["x"], unit.coords["y"])
+            coords = (unit.coords[0], unit.coords[1])
             rect = (*coords, unit.radius * 2, unit.radius * 2)
             rotation = -unit.rotation - math.pi / 2
             image = pygame.transform.rotate(self.sprites[unit.unit_type], rotation * 180 / math.pi)
@@ -210,6 +118,8 @@ class Engine:
 
         TIMER_TICK = pygame.USEREVENT + 1
         self.running = True
+        UNIT_UPDATE = pygame.USEREVENT + 4
+        pygame.time.set_timer(UNIT_UPDATE, 50)
 
         while self.running:
             #!

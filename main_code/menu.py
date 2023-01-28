@@ -1,9 +1,18 @@
 import pygame
+
 pygame.font.init()
 
 
 class Menu:
     def __init__(self, screen, choices: dict, button_w=200, button_h=50):
+
+        self.accent_color = None
+        self.main_color = None
+        self.choices_boxes = None
+        self.height = None
+        self.running = None
+        self.choices = None
+
         self.screen = screen
 
         self.x_c, self.y_c = screen.get_size()
@@ -16,33 +25,28 @@ class Menu:
         self.main_color = main_color
         self.accent_color = accent_color
 
-        x0 = int(self.x_c * 0.1)
-        x1 = int(self.x_c * 0.9)
-
         x = int(self.x_c // 2)
 
         y0 = int(self.y_c * 0.1)
         y1 = int(self.y_c * 0.9)
 
-        l = len(self.choices)
+        length = len(self.choices)
 
-        h = int(self.y_c * 0.8 // l)
+        h = int(self.y_c * 0.8 // length)
 
         self.choices_boxes = list()
-
 
         for text, y in zip(self.choices.keys(), range(y0 + int(h // 2), y1, h)):
             font = pygame.font.SysFont("monospace", self.button_h)
 
-            label = font.render(text, 1, main_color)
+            label = font.render(text, True, main_color)
 
             rect = label.get_rect()
             rect.width = self.button_w
             self.height = self.button_h
             rect.center = x, y
 
-            self.choices_boxes.append((label, rect, text) ,)
-
+            self.choices_boxes.append((label, rect, text), )
 
     def draw(self):
         for box in self.choices_boxes:
@@ -50,16 +54,13 @@ class Menu:
 
             self.screen.blit(box[0], box[1])
 
-
     def check_buttons(self, x, y):
         for box in self.choices_boxes:
             rect = box[1]
             if rect.left <= x <= rect.right and rect.top <= y <= rect.bottom:
                 self.choices[box[2]]()
-
                 self.running = False
                 return None
-
 
     def make_choice(self, choices: dict):
         self.choices = choices
@@ -78,4 +79,3 @@ class Menu:
             self.screen.fill(self.main_color)
             self.draw()
             pygame.display.flip()
-
