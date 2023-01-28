@@ -30,13 +30,13 @@ class Unit(Sprite):
             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
                 for key in kinds_of_bases:
-                    self.listen(another_unit, key)
+                    self.listen(units, another_unit, key)
 
     def check_responses(self, units: set, base_kind):
         for another_unit in units - {self}:
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
-                self.listen(another_unit, base_kind)
+                self.listen(units, another_unit, base_kind)
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
         for base in bases:
@@ -72,7 +72,7 @@ class Unit(Sprite):
             self.destiny = base.next
             self.rotation = (self.rotation + pi) % (2 * pi)
 
-    def listen(self, unit, base_kind):
+    def listen(self, units, unit, base_kind):
         if self.points[base_kind] > unit.points[base_kind] + self.distance * 1:
             self.points[base_kind] = unit.points[base_kind] + self.distance
 
@@ -87,7 +87,7 @@ class Unit(Sprite):
                 if dx < 0:
                     pass
                     unit.rotation = (unit.rotation + pi) % (2 * pi)
-            self.check_responses(unit, base_kind)
+            unit.check_responses(units, base_kind)
 
     def move(self):
         dx = self.speed * cos(self.rotation)
@@ -108,7 +108,7 @@ class Unit(Sprite):
 
     def update(self, units: list, bases: list, kinds_of_bases: list, walls: list):
         self.move()
-        self.check_requests(set(units), kinds_of_bases)
+        # self.check_requests(set(units), kinds_of_bases)
         self.check_collides(set(units), bases, kinds_of_bases, walls)
 
 
