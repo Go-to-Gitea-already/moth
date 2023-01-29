@@ -2,6 +2,7 @@ from main_code.engine import *
 import pygame
 
 
+
 class Variables:
     pass
 
@@ -103,7 +104,16 @@ class InputUIDefineLevel(Engine):
     def spawn_unit(self, coords):
         contains_x, contains_y = self.width, self.height
 
-        DropDownMenu(self, {'1': lambda: print("y") }, *coords)
+        options = dict(map(lambda x: (x.name, lambda: self.units.append(x.generate(Unit,
+                                                    contains=(contains_x, contains_y), coords=coords,
+                                                    index=len(self.units), rotation=random() * 2 * math.pi,
+                                                    speed=random() * self.units_speed / 5 * 4 + self.units_speed / 5))),
+                           self.unit_types))
+
+        print(self.unit_types)
+        print(options.items())
+
+        DropDownMenu(self, options, *coords)
 
 
 class GUIDefineLevel(Engine):

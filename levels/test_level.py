@@ -1,5 +1,5 @@
 import pygame.image
-from main_code.engine import Engine
+from main_code.engine import Engine, Generator
 from main_code.base_level import InputUIDefineLevel
 import math
 from main_code.unit import Unit
@@ -19,7 +19,7 @@ class Field(InputUIDefineLevel):
         unit_hear_distance = 45
 
         bases_count = 4
-        base_types = ['A', 'B']
+        base_types = ('A', 'B')
         base_radius = 45
 
         super().__init__(w, h, units_count, bases_count, base_types, base_radius, unit_radius, unit_speed,
@@ -43,6 +43,19 @@ class Field(InputUIDefineLevel):
         unit_image = './data/spaceship.png'
         base_image = './data/red_spaceship.png'
 
+
+        # дефолтный тип юнита
+        self.unit_types.append(Generator('D', bases=self.kinds_of_bases, destiny="B", distance=self.distance, image=unit_image,
+                 radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0))
+
+        # не дефолтный тип юнита
+        self.unit_types.append(Generator('S', bases=self.kinds_of_bases, destiny="B", distance=self.distance, image=unit_image,
+                 radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0, speed=20))
+
+
+        unit_type = 0
+
+
         for i in range(11):
             rotate = (math.pi + math.pi / 20 * (i * 1)) % (2 * math.pi)
 
@@ -54,9 +67,16 @@ class Field(InputUIDefineLevel):
 
                 speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
                 coords = (x_c, y_c)
-                self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "B",
-                                       self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
-                                       speed, self.all_sprites, 0))
+                unit = self.unit_types[0].generate(Unit,
+                                       contains=(contains_x, contains_y), coords=coords,
+                                       index=i, rotation=random() * 2 * math.pi,
+                                       speed=random() * self.units_speed / 5 * 4 + self.units_speed / 5)
+
+
+                self.units.append(unit)
+#                 self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
+#                                        self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
+#                                        speed, self.all_sprites, 0))
 
         coords = (contains_x - (contains_x ** 2 / 2) ** 0.5, contains_y - (contains_y ** 2 / 2) ** 0.5)
         self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))

@@ -8,12 +8,14 @@ from random import uniform
 
 class Unit(Sprite):
 
-    def __init__(self, bases: list, contains: dict, coords: tuple, destiny: str, distance: float, image: str,
-                 index: int, radius: float, rotation: float, speed: float, sprites_group: Group, unit_type: int):
+    def __init__(self, bases=(1, 2, 3), contains=(100, 100), coords=(0, 0), destiny=1, distance=10, image="./data/unit.png",
+                 index=0, radius=1, rotation=pi, speed=(1), sprites_group=Group(), unit_type=0):
 
         self.points = dict({*map(lambda x: (x, distance + 1), bases)})
 
         super().__init__(sprites_group)
+
+        print(bases)
 
         self.contains = contains
         self.coords = coords
@@ -105,11 +107,11 @@ class Unit(Sprite):
         dx = self.speed * cos(self.rotation)
         dy = self.speed * sin(self.rotation)
 
-        if self.coords[0] + dx + self.radius >= self.contains['x'] or self.coords[0] + dx <= self.radius:
+        if self.coords[0] + dx + self.radius >= self.contains[0] or self.coords[0] + dx <= self.radius:
             self.rotation = pi - self.rotation
             dx = self.speed * cos(self.rotation)
 
-        if self.coords[1] + dy + self.radius >= self.contains['y'] or self.coords[1] + dy <= self.radius:
+        if self.coords[1] + dy + self.radius >= self.contains[1] or self.coords[1] + dy <= self.radius:
             self.rotation = 2 * pi - self.rotation
             dy = self.speed * sin(self.rotation)
 

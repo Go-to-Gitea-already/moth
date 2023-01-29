@@ -10,13 +10,18 @@ import pygame
 
 
 class Generator:
-    def __init__(self, **kvargs):
+    def __init__(self, name, **kvargs):
+        self.name = name
         self.params = kvargs
 
-    def gen_unit(self, constructor, **kvargs):
-        kvargs = dict(set(self.params.items()) & set(kvargs.items()))
+    def generate(self, constructor, **kvargs):
 
-        return constructor(**kvargs)
+        s = set(kvargs.items()) | (set(self.params.items()) - set(kvargs.items()))
+        args = dict(s)
+
+        print(s, args)
+
+        return constructor(**args)
     
     def set_params(self, **kvargs):
         self.params = kvargs
@@ -69,6 +74,7 @@ class Engine:
         for i in range(self.count_of_units):
 
             coords = (random() * self.width, random() * self.height)
+
             unit = self.unit_types[0].generate(Unit,
                                        contains={'x': contains_x, 'y': contains_y}, coords=coords,
                                        index=i, rotation=random() * 2 * math.pi,
