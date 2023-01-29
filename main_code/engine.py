@@ -10,15 +10,19 @@ import pygame
 
 
 class Generator:
-    def __init__(**kvargs):
+    def __init__(self, **kvargs):
         self.params = kvargs
 
-    def gen_unit(constructor, **kvargs):
+    def gen_unit(self, constructor, **kvargs):
         kvargs = dict(set(self.params.items()) & set(kvargs.items()))
 
         return constructor(**kvargs)
     
-    def set_params()
+    def set_params(self, **kvargs):
+        self.params = kvargs
+
+    def get_params(self):
+        return self.params
 
 
 class Engine:
@@ -57,8 +61,8 @@ class Engine:
         base_image = './data/red_spaceship.png'
 
         # дефолтный тип юнита
-        self.unit_types[0] = Generator("destiny"="A", "distance"=self.distance, "image"=unit_image,
-                 "radius"=self.unit_radius, "sprites_group"=self.all_sprites, "unit_type"=0))
+        self.unit_types[0] = Generator(bases=self.kinds_of_bases, destiny="A", distance=self.distance, image=unit_image,
+                 radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0)
 
         unit_type = 0
 
@@ -66,13 +70,13 @@ class Engine:
 
             coords = (random() * self.width, random() * self.height)
             unit = self.unit_types[0].generate(Unit,
-                                       self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
-                                       self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
-                                       random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
+                                       contains={'x': contains_x, 'y': contains_y}, coords=coords,
+                                       index=i, rotation=random() * 2 * math.pi,
+                                       speed=random() * self.units_speed / 5 * 4 + self.units_speed / 5)
 
-            self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
-                                   self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
-                                   random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
+#             self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, A",
+#                                    self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
+#                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
 
         for i in range(self.count_of_bases):
             coords = (random() * self.width, random() * self.height)
