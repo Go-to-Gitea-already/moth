@@ -15,10 +15,12 @@ class InputUIDefineLevel(Engine):
         self.input_variables.MOVE_EVENT = pygame.USEREVENT + 2
         self.input_variables.CHECK_EVENT = pygame.USEREVENT + 3
         self.input_variables.UNIT_UPDATE = pygame.USEREVENT + 4
+        self.input_variables.GENERATE_RES = pygame.USEREVENT + 5
 
         pygame.time.set_timer(self.input_variables.MOVE_EVENT, 50)
         pygame.time.set_timer(self.input_variables.CHECK_EVENT, 100)
         pygame.time.set_timer(self.input_variables.UNIT_UPDATE, 50)
+        pygame.time.set_timer(self.input_variables.GENERATE_RES, 1000)
 
         self.input_variables.moving_of_base = False
         self.input_variables.wall_building = False
@@ -50,10 +52,13 @@ class InputUIDefineLevel(Engine):
                     else:
                         pass
 
-
             if event.type == self.input_variables.UNIT_UPDATE:
                 for unit in self.units:
                     unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
+
+            if event.type == self.input_variables.GENERATE_RES:
+                for base in self.bases:
+                    base.update()
 
             if event.type == pygame.QUIT:
                 self.running = False

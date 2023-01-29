@@ -11,14 +11,22 @@ class Base(Sprite):
 
         super().__init__(sprites_group)
 
+        self.generators = ['B']
+        self.getters = ['A']
+
         self.coords = coords
         self.kind = kind
         self.next = next_base
         self.index = index
         self.radius = radius
+        self.resource = 0
 
     def move(self, new_x: float, new_y: float):
         self.coords = (new_x, new_y)
 
     def update(self):
-        pass
+        if self.kind in self.generators:
+            self.resource += 1
+        elif self.kind in self.getters:
+            print(f'base {self.kind}: {self.resource}')
+

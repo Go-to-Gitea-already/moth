@@ -29,8 +29,6 @@ class Engine:
         self.count_of_units = count_of_units
         self.count_of_bases = count_of_bases
         self.all_sprites = pygame.sprite.Group()
-
-        #!
         self.on_timer_tick = list()
 
     def generate(self):
