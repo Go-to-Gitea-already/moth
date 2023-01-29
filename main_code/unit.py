@@ -30,13 +30,13 @@ class Unit(Sprite):
             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
                 for key in kinds_of_bases:
-                    self.listen(units, another_unit, key)
+                    another_unit.listen(units, self, key)
 
     def check_responses(self, units: set, base_kind):
         for another_unit in units - {self}:
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
-                self.listen(units, another_unit, base_kind)
+                another_unit.listen(units, self, base_kind )
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
         for base in bases:
@@ -77,17 +77,20 @@ class Unit(Sprite):
             self.points[base_kind] = unit.points[base_kind] + self.distance
 
             if base_kind == self.destiny:
-                dx = unit.coords[0] - self.coords[0]
-                dy = unit.coords[1] - self.coords[1]
+                dx = self.coords[0] - unit.coords[0] 
+                dy = self.coords[1] - unit.coords[1]
                 if dx == 0:
                     dx = 0.00000001
 
-                unit.rotation = atan(dy / dx)
+                self.rotation = atan(dy / dx)
 
                 if dx < 0:
                     pass
-                    unit.rotation = (unit.rotation + pi) % (2 * pi)
-            unit.check_responses(units, base_kind)
+                    self.rotation = (unit.rotation - pi)
+
+                self.rotation %= 2 * pi
+
+            self.check_responses(units, base_kind)
 
     def move(self):
         dx = self.speed * cos(self.rotation)
@@ -108,7 +111,8 @@ class Unit(Sprite):
 
     def update(self, units: list, bases: list, kinds_of_bases: list, walls: list):
         self.move()
-        # self.check_requests(set(units), kinds_of_bases)
+
+        self.check_requests(set(units), kinds_of_bases)
         self.check_collides(set(units), bases, kinds_of_bases, walls)
 
 
