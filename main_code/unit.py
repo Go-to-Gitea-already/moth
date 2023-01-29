@@ -77,18 +77,27 @@ class Unit(Sprite):
             self.points[base_kind] = unit.points[base_kind] + self.distance
 
             if base_kind == self.destiny:
-                dx = self.coords[0] - unit.coords[0] 
-                dy = self.coords[1] - unit.coords[1]
+                dx = unit.coords[0] - self.coords[0] 
+                dy = unit.coords[1] - self.coords[1]
+
+                # dx = self.coords[0] - unit.coords[0] 
+                # dy = self.coords[1] - unit.coords[1]
+
                 if dx == 0:
                     dx = 0.00000001
 
+                # self.rotation = atan(dy / dx) + pi % (2 * pi)
                 self.rotation = atan(dy / dx)
 
-                if dx < 0:
+                if 0 > dx:
                     pass
-                    self.rotation = (unit.rotation - pi)
+                    self.rotation = (self.rotation + pi) % (2 * pi)
 
-                self.rotation %= 2 * pi
+                if self.rotation < 0:
+                    self.rotation = 2 * pi + self.rotation
+
+
+                # print('I' if dx > 0 and dy > 0 else 'II' if dx < 0 and dy > 0 else 'III' if dx < 0 and dy < 0 else 'IV', "->", 'I' if 0 < self.rotation < pi / 2 else 'II' if pi / 2 < self.rotation < pi else 'III' if pi < self.rotation < 3 * pi / 2 else 'IV' if 3 * pi / 2 < self.rotation < 2 * pi else "bonk", self.rotation)
 
             self.check_responses(units, base_kind)
 

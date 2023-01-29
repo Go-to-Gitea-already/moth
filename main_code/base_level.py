@@ -85,7 +85,7 @@ class InputUIDefineLevel(Engine):
                     self.input_variables.wall_building = not self.input_variables.wall_building
 
             if event.type == pygame.MOUSEMOTION and self.input_variables.moving_of_base:
-                base_moving(self.input_variables.moved_base, event.pos[0] - self.input_variables.take[0], event.pos[1] - self.input_variables.take[1])
+                self.input_variables.moved_base.move(event.pos[0] - self.input_variables.take[0], event.pos[1] - self.input_variables.take[1])
 
             if event.type == pygame.MOUSEMOTION and self.input_variables.wall_building:
                 self.walls[self.input_variables.wall_index] = Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 0, self.all_sprites, 1)
