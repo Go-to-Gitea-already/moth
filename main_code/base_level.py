@@ -113,3 +113,11 @@ class GUIDefineLevel(Engine):
         pygame.init()
         self.draw_variables = Variables()
 
+
+class LogicDefineLevel(Engine):
+    def __init__(self):
+        super().__init__(*args, **kvargs)
+
+        pygame.init()
+        self.logic_variables = Variables()
+

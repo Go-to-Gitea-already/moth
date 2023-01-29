@@ -9,6 +9,18 @@ from main_code.wall import Wall
 import pygame
 
 
+class Generator:
+    def __init__(**kvargs):
+        self.params = kvargs
+
+    def gen_unit(constructor, **kvargs):
+        kvargs = dict(set(self.params.items()) & set(kvargs.items()))
+
+        return constructor(**kvargs)
+    
+    def set_params()
+
+
 class Engine:
 
     units = list()
@@ -30,8 +42,9 @@ class Engine:
         self.count_of_bases = count_of_bases
         self.all_sprites = pygame.sprite.Group()
 
-        #!
         self.on_timer_tick = list()
+
+        self.unit_types = list()
 
     def generate(self):
         self.units = list()
@@ -43,9 +56,20 @@ class Engine:
         unit_image = './data/spaceship.png'
         base_image = './data/red_spaceship.png'
 
+        # дефолтный тип юнита
+        self.unit_types[0] = Generator("destiny"="A", "distance"=self.distance, "image"=unit_image,
+                 "radius"=self.unit_radius, "sprites_group"=self.all_sprites, "unit_type"=0))
+
+        unit_type = 0
+
         for i in range(self.count_of_units):
 
             coords = (random() * self.width, random() * self.height)
+            unit = self.unit_types[0].generate(Unit,
+                                       self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
+                                       self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
+                                       random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
+
             self.units.append(Unit(self.kinds_of_bases, {'x': contains_x, 'y': contains_y}, coords, "A",
                                    self.distance, unit_image, i, self.unit_radius, random() * 2 * math.pi,
                                    random() * self.units_speed / 5 * 4 + self.units_speed / 5, self.all_sprites, 0))
@@ -106,13 +130,12 @@ class Engine:
             self.screen.blit(image, rect)
 
     def start(self):
-
         # нужно для нормального функционирования стартового меню
         self.events = pygame.event.get()
 
         self.screen = pygame.display.set_mode((self.width, self.height))
 
-        start_menu = Menu(self, {"start": lambda: print("game started!")}, stop_main_process=True)
+        start_menu = Menu(self, {"start": lambda: print("started")}, stop_main_process=True)
 
         TIMER_TICK = pygame.USEREVENT + 1
         self.running = True
