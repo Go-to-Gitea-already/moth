@@ -15,7 +15,8 @@ class Unit(Sprite):
 
         super().__init__(sprites_group)
 
-        print(bases)
+        self.generators = ['B']
+        self.getters = ['A']
 
         self.contains = contains
         self.coords = coords
@@ -26,6 +27,7 @@ class Unit(Sprite):
         self.rotation = rotation
         self.speed = speed
         self.unit_type = unit_type
+        self.resource = 0
 
     def check_requests(self, units: set, kinds_of_bases: list):
         for another_unit in units - {self}:
@@ -71,6 +73,12 @@ class Unit(Sprite):
     def encounter(self, base):
         self.points[base.kind] = 0
         if base.kind == self.destiny:
+            if base.kind in self.generators and base.resource >= 1:
+                base.resource -= 1
+                self.resource += 1
+            elif base.kind in self.getters and self.resource >= 1:
+                self.resource -= 1
+                base.resource += 1
             self.destiny = base.next
             self.rotation = (self.rotation + pi) % (2 * pi)
 
