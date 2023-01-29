@@ -8,12 +8,14 @@ from random import uniform
 
 class Unit(Sprite):
 
-    def __init__(self, bases: list, contains: dict, coords: tuple, destiny: str, distance: float, image: str,
-                 index: int, radius: float, rotation: float, speed: float, sprites_group: Group, unit_type: int):
+    def __init__(self, bases=(1, 2, 3), contains=(100, 100), coords=(0, 0), destiny=1, distance=10, image="./data/unit.png",
+                 index=0, radius=1, rotation=pi, speed=(1), sprites_group=Group(), unit_type=0):
 
         self.points = dict({*map(lambda x: (x, distance + 1), bases)})
 
         super().__init__(sprites_group)
+
+        print(bases)
 
         self.contains = contains
         self.coords = coords
@@ -30,13 +32,13 @@ class Unit(Sprite):
             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
                 for key in kinds_of_bases:
-                    self.listen(units, another_unit, key)
+                    another_unit.listen(units, self, key)
 
     def check_responses(self, units: set, base_kind):
         for another_unit in units - {self}:
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
-                self.listen(units, another_unit, base_kind)
+                another_unit.listen(units, self, base_kind )
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
         for base in bases:
@@ -77,27 +79,39 @@ class Unit(Sprite):
             self.points[base_kind] = unit.points[base_kind] + self.distance
 
             if base_kind == self.destiny:
-                dx = unit.coords[0] - self.coords[0]
+                dx = unit.coords[0] - self.coords[0] 
                 dy = unit.coords[1] - self.coords[1]
+
+                # dx = self.coords[0] - unit.coords[0] 
+                # dy = self.coords[1] - unit.coords[1]
+
                 if dx == 0:
                     dx = 0.00000001
 
-                unit.rotation = atan(dy / dx)
+                # self.rotation = atan(dy / dx) + pi % (2 * pi)
+                self.rotation = atan(dy / dx)
 
-                if dx < 0:
+                if 0 > dx:
                     pass
-                    unit.rotation = (unit.rotation + pi) % (2 * pi)
-            unit.check_responses(units, base_kind)
+                    self.rotation = (self.rotation + pi) % (2 * pi)
+
+                if self.rotation < 0:
+                    self.rotation = 2 * pi + self.rotation
+
+
+                # print('I' if dx > 0 and dy > 0 else 'II' if dx < 0 and dy > 0 else 'III' if dx < 0 and dy < 0 else 'IV', "->", 'I' if 0 < self.rotation < pi / 2 else 'II' if pi / 2 < self.rotation < pi else 'III' if pi < self.rotation < 3 * pi / 2 else 'IV' if 3 * pi / 2 < self.rotation < 2 * pi else "bonk", self.rotation)
+
+            self.check_responses(units, base_kind)
 
     def move(self):
         dx = self.speed * cos(self.rotation)
         dy = self.speed * sin(self.rotation)
 
-        if self.coords[0] + dx + self.radius >= self.contains['x'] or self.coords[0] + dx <= self.radius:
+        if self.coords[0] + dx + self.radius >= self.contains[0] or self.coords[0] + dx <= self.radius:
             self.rotation = pi - self.rotation
             dx = self.speed * cos(self.rotation)
 
-        if self.coords[1] + dy + self.radius >= self.contains['y'] or self.coords[1] + dy <= self.radius:
+        if self.coords[1] + dy + self.radius >= self.contains[1] or self.coords[1] + dy <= self.radius:
             self.rotation = 2 * pi - self.rotation
             dy = self.speed * sin(self.rotation)
 
@@ -108,7 +122,8 @@ class Unit(Sprite):
 
     def update(self, units: list, bases: list, kinds_of_bases: list, walls: list):
         self.move()
-        # self.check_requests(set(units), kinds_of_bases)
+
+        self.check_requests(set(units), kinds_of_bases)
         self.check_collides(set(units), bases, kinds_of_bases, walls)
 
 

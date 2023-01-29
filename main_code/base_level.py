@@ -2,6 +2,7 @@ from main_code.engine import *
 import pygame
 
 
+
 class Variables:
     pass
 
@@ -85,7 +86,7 @@ class InputUIDefineLevel(Engine):
                     self.input_variables.wall_building = not self.input_variables.wall_building
 
             if event.type == pygame.MOUSEMOTION and self.input_variables.moving_of_base:
-                base_moving(self.input_variables.moved_base, event.pos[0] - self.input_variables.take[0], event.pos[1] - self.input_variables.take[1])
+                self.input_variables.moved_base.move(event.pos[0] - self.input_variables.take[0], event.pos[1] - self.input_variables.take[1])
 
             if event.type == pygame.MOUSEMOTION and self.input_variables.wall_building:
                 self.walls[self.input_variables.wall_index] = Wall(self.input_variables.wall_coord, (event.pos[0], event.pos[1]), 2, self.all_sprites, 0)
@@ -103,7 +104,16 @@ class InputUIDefineLevel(Engine):
     def spawn_unit(self, coords):
         contains_x, contains_y = self.width, self.height
 
-        DropDownMenu(self, {'1': lambda: print("y") }, *coords)
+        options = dict(map(lambda x: (x.name, lambda: self.units.append(x.generate(Unit,
+                                                    contains=(contains_x, contains_y), coords=coords,
+                                                    index=len(self.units), rotation=random() * 2 * math.pi,
+                                                    speed=random() * self.units_speed / 5 * 4 + self.units_speed / 5))),
+                           self.unit_types))
+
+        print(self.unit_types)
+        print(options.items())
+
+        DropDownMenu(self, options, *coords)
 
 
 class GUIDefineLevel(Engine):
@@ -112,4 +122,12 @@ class GUIDefineLevel(Engine):
 
         pygame.init()
         self.draw_variables = Variables()
+
+
+class LogicDefineLevel(Engine):
+    def __init__(self):
+        super().__init__(*args, **kvargs)
+
+        pygame.init()
+        self.logic_variables = Variables()
 
