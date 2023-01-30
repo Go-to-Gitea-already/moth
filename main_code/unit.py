@@ -29,6 +29,7 @@ class Unit(Sprite):
         self.unit_type = unit_type
         self.resource = 0
 
+
     def check_requests(self, units: set, kinds_of_bases: list):
         for another_unit in units - {self}:
             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (

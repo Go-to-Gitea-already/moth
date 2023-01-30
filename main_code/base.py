@@ -27,6 +27,4 @@ class Base(Sprite):
     def update(self):
         if self.kind in self.generators:
             self.resource += 1
-        elif self.kind in self.getters:
-            print(f'base {self.kind}: {self.resource}')
 

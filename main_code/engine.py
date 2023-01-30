@@ -55,6 +55,16 @@ class Engine:
 
         self.unit_types = list()
 
+        self.unit_costs = {
+            0: 10,
+            1: 100
+        }
+
+        self.resource = 0
+
+        self.generators = ['B']
+        self.getters = ['A']
+
     def generate(self):
         self.units = list()
         self.bases = list()

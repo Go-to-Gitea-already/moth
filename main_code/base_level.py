@@ -3,7 +3,6 @@ from ui.buttons import Buttons
 import pygame
 
 
-
 class Variables:
     pass
 
@@ -61,6 +60,10 @@ class InputUIDefineLevel(Engine):
             if event.type == self.input_variables.GENERATE_RES:
                 for base in self.bases:
                     base.update()
+                    if base.kind in self.getters:
+                        self.resource += base.resource
+                        base.resource = 0
+                print(self.resource)
 
             if event.type == pygame.QUIT:
                 self.running = False
@@ -110,10 +113,17 @@ class InputUIDefineLevel(Engine):
     def spawn_unit(self, coords):
         contains_x, contains_y = self.width, self.height
 
-        options = dict(map(lambda x: (x.name, lambda: self.units.append(x.generate(Unit,
+        def spawn(unit_type):
+            if self.resource < self.unit_costs[unit_type.params["unit_type"]]:
+                return False
+
+            self.resource -= self.unit_costs[unit_type.params["unit_type"]]
+            self.units.append(unit_type.generate(Unit,
                                                     contains=(contains_x, contains_y), coords=coords,
                                                     index=len(self.units), rotation=random() * 2 * math.pi,
-                                                    speed=random() * self.units_speed / 5 * 4 + self.units_speed / 5))),
+                                                    speed=random() * self.units_speed / 5 * 4 + self.units_speed / 5))
+
+        options = dict(map(lambda x: (x.name, lambda: spawn(x)),
                            self.unit_types))
 
         print(self.unit_types)
