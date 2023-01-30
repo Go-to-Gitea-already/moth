@@ -63,6 +63,9 @@ class Buttons:
 
 
     def draw(self):
+        if self.screen is None:
+            self.screen = self.engine.screen
+
         for box in self.choices_boxes:
             pygame.draw.rect(self.screen, self.accent_color, pygame.Rect(box[1]))
 

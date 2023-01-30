@@ -1,4 +1,5 @@
 from main_code.engine import *
+from ui.buttons import Buttons
 import pygame
 
 
@@ -122,11 +123,21 @@ class InputUIDefineLevel(Engine):
 
 
 class GUIDefineLevel(Engine):
-    def __init__(self):
+    def __init__(self, *args, **kvargs):
         super().__init__(*args, **kvargs)
 
         pygame.init()
         self.draw_variables = Variables()
+
+        self.draw_variables.menus = list()
+
+        self.draw_variables.action_menu = Buttons(self,
+                                                  {'1': lambda: print(1),
+                                                   '2': lambda: print(2),
+                                                   '3': lambda: print(3)}, 
+                                                  is_static=True,
+                                                  rect=pygame.Rect((450, 25), (25, 100)),
+                                                  button_w=25, button_h=25)
 
 
 class LogicDefineLevel(Engine):
