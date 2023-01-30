@@ -50,7 +50,7 @@ class Buttons:
 
 
         for text, y in zip(self.choices.keys(), range(y0 + int(h // 2), y1, h)):
-            font = pygame.font.SysFont("monospace", self.button_h)
+            font = pygame.font.SysFont("monospace", int(self.button_h))
 
             label = font.render(text, 1, main_color)
 
@@ -67,6 +67,16 @@ class Buttons:
             self.screen = self.engine.screen
 
         for box in self.choices_boxes:
+            rect = pygame.Rect(box[1])
+
+            w = 2
+            rect.top -= w
+            rect.left -= w
+            rect.height += w * 2
+            rect.width += w * 2
+
+            pygame.draw.rect(self.screen, self.main_color, rect)
+
             pygame.draw.rect(self.screen, self.accent_color, pygame.Rect(box[1]))
 
             self.screen.blit(box[0], box[1])
