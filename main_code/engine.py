@@ -16,7 +16,7 @@ class Generator:
 
     def generate(self, constructor, **kvargs):
 
-        s = set(kvargs.items()) | (set(self.params.items()) - set(kvargs.items()))
+        s = set(self.params.items()) | (set(kvargs.items()) - set(self.params.items()))
         args = dict(s)
 
         print(s, args)
