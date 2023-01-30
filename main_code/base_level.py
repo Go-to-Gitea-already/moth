@@ -131,12 +131,18 @@ class GUIDefineLevel(Engine):
 
         self.draw_variables.menus = list()
 
+        # создание меню быстрых действий
+        rect = pygame.Rect((0, 0), (0, 0))
+        rect.left=self.height - 50
+        rect.top=25
+        rect.width=25
+        rect.height=150
         self.draw_variables.action_menu = Buttons(self,
                                                   {'1': lambda: print(1),
                                                    '2': lambda: print(2),
                                                    '3': lambda: print(3)}, 
                                                   is_static=True,
-                                                  rect=pygame.Rect((450, 25), (25, 100)),
+                                                  rect=rect,
                                                   button_w=25, button_h=25)
 
 
