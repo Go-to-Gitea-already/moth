@@ -55,6 +55,7 @@ class InputUIDefineLevel(Engine):
 
             if event.type == self.input_variables.UNIT_UPDATE:
                 for unit in self.units:
+                    # print(list(map(lambda x: x.kind, self.bases)), self.kinds_of_bases)
                     unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
 
             if event.type == self.input_variables.GENERATE_RES:

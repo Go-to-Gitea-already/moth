@@ -19,7 +19,7 @@ class Generator:
         s = set(self.params.items()) | (set(kvargs.items()) - set(self.params.items()))
         args = dict(s)
 
-        print(s, args)
+        # print(s, args)
 
         return constructor(**args)
     
@@ -45,6 +45,7 @@ class Engine:
         self.height = height
         self.distance = distance
         self.kinds_of_bases = kinds_of_bases
+        print(self.kinds_of_bases)
         self.radius_of_base = radius_of_base
         self.unit_radius = unit_radius
         self.count_of_units = count_of_units
@@ -62,8 +63,8 @@ class Engine:
 
         self.resource = 0
 
-        self.generators = ['B']
-        self.getters = ['A']
+        self.generators = ['2']
+        self.getters = ['1']
 
     def generate(self):
         self.units = list()
@@ -76,7 +77,7 @@ class Engine:
         base_image = './data/red_spaceship.png'
 
         # дефолтный тип юнита
-        self.unit_types[0] = Generator(bases=self.kinds_of_bases, destiny="A", distance=self.distance, image=unit_image,
+        self.unit_types[0] = Generator(bases=self.kinds_of_bases, destiny="1", distance=self.distance, image=unit_image,
                  radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0)
 
         unit_type = 0
@@ -119,9 +120,9 @@ class Engine:
         for base in self.bases:
             coords = (base.coords[0], base.coords[1])
             color = (255, 255, 255)
-            if base.kind == 'A':
+            if base.kind == '1':
                 color = self.BASE1_COLOR
-            elif base.kind == 'B':
+            elif base.kind == '2':
                 color = self.BASE2_COLOR
             elif base.kind == 'C':
                 color = self.BASE3_COLOR
@@ -131,9 +132,9 @@ class Engine:
             pygame.draw.circle(screen, color, coords, self.radius_of_base)
 
             color = (255, 255, 255)
-            if base.next == 'A':
+            if base.next == '1':
                 color = self.BASE1_COLOR
-            elif base.next == 'B':
+            elif base.next == '2':
                 color = self.BASE2_COLOR
             elif base.next == 'C':
                 color = self.BASE3_COLOR

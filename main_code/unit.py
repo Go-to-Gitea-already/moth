@@ -5,18 +5,21 @@ from os.path import join as os_join
 from math import cos, sin, pi, sqrt, atan
 from random import uniform
 
+from main_code.prime_unit.unit import PrimeUnit
 
-class Unit(Sprite):
+
+class Unit(Sprite, PrimeUnit):
 
     def __init__(self, bases=(1, 2, 3), contains=(100, 100), coords=(0, 0), destiny=1, distance=10, image="./data/unit.png",
                  index=0, radius=1, rotation=pi, speed=(1), sprites_group=Group(), unit_type=0):
 
         self.points = dict({*map(lambda x: (x, distance + 1), bases)})
 
-        super().__init__(sprites_group)
+        Sprite.__init__(self, sprites_group)
+        PrimeUnit.__init__(self, coords[0], coords[1], distance)
 
-        self.generators = ['B']
-        self.getters = ['A']
+        self.generators = [2]
+        self.getters = [1]
 
         self.contains = contains
         self.coords = coords
@@ -30,20 +33,22 @@ class Unit(Sprite):
         self.resource = 0
 
 
-    def check_requests(self, units: set, kinds_of_bases: list):
-        for another_unit in units - {self}:
-            if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
-                    another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
-                for key in kinds_of_bases:
-                    another_unit.listen(units, self, key)
+#     def check_requests(self, units: set, kinds_of_bases: list):
+#         for another_unit in units - {self}:
+#             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
+#                     another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
+#                 for key in kinds_of_bases:
+#                     another_unit.listen(units, self, key)
 
     def check_responses(self, units: set, base_kind):
         for another_unit in units - {self}:
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
+                # print(type(base_kind))
                 another_unit.listen(units, self, base_kind )
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
+        # print("collides")
         for base in bases:
             if sqrt((self.coords[0] - base.coords[0]) ** 2 +
                     (self.coords[1] - base.coords[1]) ** 2) <= base.radius + self.radius:
@@ -51,8 +56,9 @@ class Unit(Sprite):
 
                 # not done, yet
 
+                # print(type(base.kind))
                 self.check_responses(units, base.kind)
-                self.check_requests(units, kinds_of_bases)
+                self.check_requests(tuple(units), tuple(kinds_of_bases))
 
         for wall in walls:
             if wall.kind != 0:
@@ -81,9 +87,12 @@ class Unit(Sprite):
                 self.resource -= 1
                 base.resource += 1
             self.destiny = base.next
+            # print(self.destiny)
             self.rotation = (self.rotation + pi) % (2 * pi)
 
     def listen(self, units, unit, base_kind):
+        # print(listen)
+        # print(type(base_kind))
         if self.points[base_kind] > unit.points[base_kind] + self.distance * 1:
             self.points[base_kind] = unit.points[base_kind] + self.distance
 
@@ -132,7 +141,8 @@ class Unit(Sprite):
     def update(self, units: list, bases: list, kinds_of_bases: list, walls: list):
         self.move()
 
-        self.check_requests(set(units), kinds_of_bases)
+        # print(kinds_of_bases)
+        self.check_requests(list(units), list(kinds_of_bases))
         self.check_collides(set(units), bases, kinds_of_bases, walls)
 
 

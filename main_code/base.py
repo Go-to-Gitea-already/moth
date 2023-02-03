@@ -11,11 +11,12 @@ class Base(Sprite):
 
         super().__init__(sprites_group)
 
-        self.generators = ['B']
-        self.getters = ['A']
+        self.generators = [2]
+        self.getters = [1]
 
         self.coords = coords
         self.kind = kind
+        print(kind)
         self.next = next_base
         self.index = index
         self.radius = radius
