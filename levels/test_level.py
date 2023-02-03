@@ -19,7 +19,7 @@ class Field(InputUIDefineLevel, GUIDefineLevel):
         unit_hear_distance = 45
 
         bases_count = 4
-        base_types = ('A', 'B')
+        base_types = (1, 2)
         base_radius = 45
 
         super().__init__(w, h, units_count, bases_count, base_types, base_radius, unit_radius, unit_speed,
@@ -45,11 +45,11 @@ class Field(InputUIDefineLevel, GUIDefineLevel):
 
 
         # дефолтный тип юнита
-        self.unit_types.append(Generator('D', bases=self.kinds_of_bases, destiny="B", distance=self.distance, image=unit_image,
+        self.unit_types.append(Generator('D', bases=self.kinds_of_bases, destiny="2", distance=self.distance, image=unit_image,
                  radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0))
 
         # не дефолтный тип юнита
-        self.unit_types.append(Generator('S', bases=self.kinds_of_bases, destiny="B", distance=self.distance, image=unit_image,
+        self.unit_types.append(Generator('S', bases=self.kinds_of_bases, destiny="2", distance=self.distance, image=unit_image,
                  radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0, speed=20))
 
 
@@ -66,7 +66,7 @@ class Field(InputUIDefineLevel, GUIDefineLevel):
                                                                    * math.cos(rotate))
 
                 speed = self.units_speed / 3 + self.units_speed / 3 * 2 / bungle * (j + 1)
-                coords = (x_c, y_c)
+                coords = (int(x_c), int(y_c))
                 unit = self.unit_types[0].generate(Unit,
                                        contains=(contains_x, contains_y), coords=coords,
                                        index=i, rotation=random() * 2 * math.pi,
@@ -79,13 +79,13 @@ class Field(InputUIDefineLevel, GUIDefineLevel):
 #                                        speed, self.all_sprites, 0))
 
         coords = (contains_x - (contains_x ** 2 / 2) ** 0.5, contains_y - (contains_y ** 2 / 2) ** 0.5)
-        self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))
+        self.bases.append(Base(coords, base_image, 1, 2, 1, self.radius_of_base, self.all_sprites))
 
         coords = (self.radius_of_base, contains_y - self.radius_of_base)
-        self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))
+        self.bases.append(Base(coords, base_image, 1, 2, 1, self.radius_of_base, self.all_sprites))
 
         coords = (contains_x - self.radius_of_base, self.radius_of_base)
-        self.bases.append(Base(coords, base_image, 1, 'B', 'A', self.radius_of_base, self.all_sprites))
+        self.bases.append(Base(coords, base_image, 1, 2, 1, self.radius_of_base, self.all_sprites))
 
         coords = (contains_x - self.radius_of_base, contains_y - self.radius_of_base)
-        self.bases.append(Base(coords, base_image, 1, 'A', 'B', self.radius_of_base, self.all_sprites))
+        self.bases.append(Base(coords, base_image, 1, 1, 2, self.radius_of_base, self.all_sprites))
