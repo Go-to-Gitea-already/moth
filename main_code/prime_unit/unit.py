@@ -440,11 +440,231 @@ class PrimeUnitVector(object):
 # Register PrimeUnitVector in _unit:
 _unit.PrimeUnitVector_swigregister(PrimeUnitVector)
 
+class DoubleMap(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _unit.DoubleMap_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _unit.DoubleMap___nonzero__(self)
+
+    def __bool__(self):
+        return _unit.DoubleMap___bool__(self)
+
+    def __len__(self):
+        return _unit.DoubleMap___len__(self)
+    def __iter__(self):
+        return self.key_iterator()
+    def iterkeys(self):
+        return self.key_iterator()
+    def itervalues(self):
+        return self.value_iterator()
+    def iteritems(self):
+        return self.iterator()
+
+    def __getitem__(self, key):
+        return _unit.DoubleMap___getitem__(self, key)
+
+    def __delitem__(self, key):
+        return _unit.DoubleMap___delitem__(self, key)
+
+    def has_key(self, key):
+        return _unit.DoubleMap_has_key(self, key)
+
+    def keys(self):
+        return _unit.DoubleMap_keys(self)
+
+    def values(self):
+        return _unit.DoubleMap_values(self)
+
+    def items(self):
+        return _unit.DoubleMap_items(self)
+
+    def __contains__(self, key):
+        return _unit.DoubleMap___contains__(self, key)
+
+    def key_iterator(self):
+        return _unit.DoubleMap_key_iterator(self)
+
+    def value_iterator(self):
+        return _unit.DoubleMap_value_iterator(self)
+
+    def __setitem__(self, *args):
+        return _unit.DoubleMap___setitem__(self, *args)
+
+    def asdict(self):
+        return _unit.DoubleMap_asdict(self)
+
+    def __init__(self, *args):
+        _unit.DoubleMap_swiginit(self, _unit.new_DoubleMap(*args))
+
+    def empty(self):
+        return _unit.DoubleMap_empty(self)
+
+    def size(self):
+        return _unit.DoubleMap_size(self)
+
+    def swap(self, v):
+        return _unit.DoubleMap_swap(self, v)
+
+    def begin(self):
+        return _unit.DoubleMap_begin(self)
+
+    def end(self):
+        return _unit.DoubleMap_end(self)
+
+    def rbegin(self):
+        return _unit.DoubleMap_rbegin(self)
+
+    def rend(self):
+        return _unit.DoubleMap_rend(self)
+
+    def clear(self):
+        return _unit.DoubleMap_clear(self)
+
+    def get_allocator(self):
+        return _unit.DoubleMap_get_allocator(self)
+
+    def count(self, x):
+        return _unit.DoubleMap_count(self, x)
+
+    def erase(self, *args):
+        return _unit.DoubleMap_erase(self, *args)
+
+    def find(self, x):
+        return _unit.DoubleMap_find(self, x)
+
+    def lower_bound(self, x):
+        return _unit.DoubleMap_lower_bound(self, x)
+
+    def upper_bound(self, x):
+        return _unit.DoubleMap_upper_bound(self, x)
+    __swig_destroy__ = _unit.delete_DoubleMap
+
+# Register DoubleMap in _unit:
+_unit.DoubleMap_swigregister(DoubleMap)
+
+class IntMap(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _unit.IntMap_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _unit.IntMap___nonzero__(self)
+
+    def __bool__(self):
+        return _unit.IntMap___bool__(self)
+
+    def __len__(self):
+        return _unit.IntMap___len__(self)
+    def __iter__(self):
+        return self.key_iterator()
+    def iterkeys(self):
+        return self.key_iterator()
+    def itervalues(self):
+        return self.value_iterator()
+    def iteritems(self):
+        return self.iterator()
+
+    def __getitem__(self, key):
+        return _unit.IntMap___getitem__(self, key)
+
+    def __delitem__(self, key):
+        return _unit.IntMap___delitem__(self, key)
+
+    def has_key(self, key):
+        return _unit.IntMap_has_key(self, key)
+
+    def keys(self):
+        return _unit.IntMap_keys(self)
+
+    def values(self):
+        return _unit.IntMap_values(self)
+
+    def items(self):
+        return _unit.IntMap_items(self)
+
+    def __contains__(self, key):
+        return _unit.IntMap___contains__(self, key)
+
+    def key_iterator(self):
+        return _unit.IntMap_key_iterator(self)
+
+    def value_iterator(self):
+        return _unit.IntMap_value_iterator(self)
+
+    def __setitem__(self, *args):
+        return _unit.IntMap___setitem__(self, *args)
+
+    def asdict(self):
+        return _unit.IntMap_asdict(self)
+
+    def __init__(self, *args):
+        _unit.IntMap_swiginit(self, _unit.new_IntMap(*args))
+
+    def empty(self):
+        return _unit.IntMap_empty(self)
+
+    def size(self):
+        return _unit.IntMap_size(self)
+
+    def swap(self, v):
+        return _unit.IntMap_swap(self, v)
+
+    def begin(self):
+        return _unit.IntMap_begin(self)
+
+    def end(self):
+        return _unit.IntMap_end(self)
+
+    def rbegin(self):
+        return _unit.IntMap_rbegin(self)
+
+    def rend(self):
+        return _unit.IntMap_rend(self)
+
+    def clear(self):
+        return _unit.IntMap_clear(self)
+
+    def get_allocator(self):
+        return _unit.IntMap_get_allocator(self)
+
+    def count(self, x):
+        return _unit.IntMap_count(self, x)
+
+    def erase(self, *args):
+        return _unit.IntMap_erase(self, *args)
+
+    def find(self, x):
+        return _unit.IntMap_find(self, x)
+
+    def lower_bound(self, x):
+        return _unit.IntMap_lower_bound(self, x)
+
+    def upper_bound(self, x):
+        return _unit.IntMap_upper_bound(self, x)
+    __swig_destroy__ = _unit.delete_IntMap
+
+# Register IntMap in _unit:
+_unit.IntMap_swigregister(IntMap)
+
 class PrimeUnit(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
     x = property(_unit.PrimeUnit_x_get, _unit.PrimeUnit_x_set)
     y = property(_unit.PrimeUnit_y_get, _unit.PrimeUnit_y_set)
+    rotation = property(_unit.PrimeUnit_rotation_get, _unit.PrimeUnit_rotation_set)
+    distance = property(_unit.PrimeUnit_distance_get, _unit.PrimeUnit_distance_set)
+    destiny = property(_unit.PrimeUnit_destiny_get, _unit.PrimeUnit_destiny_set)
+    points = property(_unit.PrimeUnit_points_get, _unit.PrimeUnit_points_set)
 
     def __init__(self, *args):
         _unit.PrimeUnit_swiginit(self, _unit.new_PrimeUnit(*args))
@@ -452,12 +672,124 @@ class PrimeUnit(object):
     def check_requests(self, units, kinds_of_bases):
         return _unit.PrimeUnit_check_requests(self, units, kinds_of_bases)
 
+    def check_responses(self, units, base_kind):
+        # print(type(units))
+        return _unit.PrimeUnit_check_responses(self, units, base_kind)
+
     def listen(self, units, unit, base_kind):
         return _unit.PrimeUnit_listen(self, units, unit, base_kind)
     __swig_destroy__ = _unit.delete_PrimeUnit
 
 # Register PrimeUnit in _unit:
 _unit.PrimeUnit_swigregister(PrimeUnit)
+
+class pymap(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _unit.pymap_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _unit.pymap___nonzero__(self)
+
+    def __bool__(self):
+        return _unit.pymap___bool__(self)
+
+    def __len__(self):
+        return _unit.pymap___len__(self)
+    def __iter__(self):
+        return self.key_iterator()
+    def iterkeys(self):
+        return self.key_iterator()
+    def itervalues(self):
+        return self.value_iterator()
+    def iteritems(self):
+        return self.iterator()
+
+    def __getitem__(self, key):
+        return _unit.pymap___getitem__(self, key)
+
+    def __delitem__(self, key):
+        return _unit.pymap___delitem__(self, key)
+
+    def has_key(self, key):
+        return _unit.pymap_has_key(self, key)
+
+    def keys(self):
+        return _unit.pymap_keys(self)
+
+    def values(self):
+        return _unit.pymap_values(self)
+
+    def items(self):
+        return _unit.pymap_items(self)
+
+    def __contains__(self, key):
+        return _unit.pymap___contains__(self, key)
+
+    def key_iterator(self):
+        return _unit.pymap_key_iterator(self)
+
+    def value_iterator(self):
+        return _unit.pymap_value_iterator(self)
+
+    def __setitem__(self, *args):
+        return _unit.pymap___setitem__(self, *args)
+
+    def asdict(self):
+        return _unit.pymap_asdict(self)
+
+    def __init__(self, *args):
+        _unit.pymap_swiginit(self, _unit.new_pymap(*args))
+
+    def empty(self):
+        return _unit.pymap_empty(self)
+
+    def size(self):
+        return _unit.pymap_size(self)
+
+    def swap(self, v):
+        return _unit.pymap_swap(self, v)
+
+    def begin(self):
+        return _unit.pymap_begin(self)
+
+    def end(self):
+        return _unit.pymap_end(self)
+
+    def rbegin(self):
+        return _unit.pymap_rbegin(self)
+
+    def rend(self):
+        return _unit.pymap_rend(self)
+
+    def clear(self):
+        return _unit.pymap_clear(self)
+
+    def get_allocator(self):
+        return _unit.pymap_get_allocator(self)
+
+    def count(self, x):
+        return _unit.pymap_count(self, x)
+
+    def erase(self, *args):
+        return _unit.pymap_erase(self, *args)
+
+    def find(self, x):
+        return _unit.pymap_find(self, x)
+
+    def lower_bound(self, x):
+        return _unit.pymap_lower_bound(self, x)
+
+    def upper_bound(self, x):
+        return _unit.pymap_upper_bound(self, x)
+    __swig_destroy__ = _unit.delete_pymap
+
+# Register pymap in _unit:
+_unit.pymap_swigregister(pymap)
 
 
 
