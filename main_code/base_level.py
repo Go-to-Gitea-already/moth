@@ -32,7 +32,6 @@ class InputUIDefineLevel(Engine):
 
         self.on_timer_tick.append(self.event_handle)
 
-
     def event_handle(self):
         for event in self.events:
 
@@ -109,7 +108,6 @@ class InputUIDefineLevel(Engine):
                     coords = pos
                     self.spawn_unit(coords)
 
-
     def spawn_unit(self, coords):
         contains_x, contains_y = self.width, self.height
 
@@ -157,8 +155,8 @@ class GUIDefineLevel(Engine):
 
 
 class LogicDefineLevel(Engine):
-    def __init__(self):
-        super().__init__(*args, **kvargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         pygame.init()
         self.logic_variables = Variables()

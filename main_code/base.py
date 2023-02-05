@@ -1,7 +1,6 @@
 from pygame.sprite import Sprite, Group
 from pygame.mask import from_surface
-from pygame.image import load
-from os.path import join as os_join
+from pygame import Surface
 
 
 class Base(Sprite):
@@ -10,6 +9,10 @@ class Base(Sprite):
                  sprites_group: Group):
 
         super().__init__(sprites_group)
+
+        self.image = Surface((2 * radius, 2 * radius))
+        self.mask = from_surface(self.image)
+        self.rect = self.image.get_rect()
 
         self.generators = ['B']
         self.getters = ['A']

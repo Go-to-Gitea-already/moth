@@ -161,11 +161,10 @@ class Engine:
         self.running = True
 
         while self.running:
-            #!
+
             self.events = pygame.event.get()
             self.render(self.screen)
 
-            #!
             # запускаем всё остальное
             self.timer_tick()
 

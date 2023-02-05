@@ -1,19 +1,22 @@
-from pygame.sprite import Sprite, Group
-from pygame.mask import from_surface
-from pygame.image import load
-from os.path import join as os_join
+from pygame.sprite import Sprite, Group, collide_mask
 from math import cos, sin, pi, sqrt, atan
 from random import uniform
+from pygame.mask import from_surface
+from pygame.image import load
 
 
 class Unit(Sprite):
 
-    def __init__(self, bases=(1, 2, 3), contains=(100, 100), coords=(0, 0), destiny=1, distance=10, image="./data/unit.png",
+    def __init__(self, bases=(1, 2, 3), contains=(100, 100), coords=(0, 0), destiny=1, distance=10, image="./data/spaceship.png",
                  index=0, radius=1, rotation=pi, speed=(1), sprites_group=Group(), unit_type=0):
+
+        super().__init__(sprites_group)
 
         self.points = dict({*map(lambda x: (x, distance + 1), bases)})
 
-        super().__init__(sprites_group)
+        self.image = load(image)
+        self.mask = from_surface(self.image)
+        self.rect = self.image.get_rect()
 
         self.generators = ['B']
         self.getters = ['A']
@@ -41,16 +44,16 @@ class Unit(Sprite):
         for another_unit in units - {self}:
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
-                another_unit.listen(units, self, base_kind )
+                another_unit.listen(units, self, base_kind)
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
         for base in bases:
-            if sqrt((self.coords[0] - base.coords[0]) ** 2 +
-                    (self.coords[1] - base.coords[1]) ** 2) <= base.radius + self.radius:
+            if collide_mask(self, base):
+
+                # if sqrt((self.coords[0] - base.coords[0]) ** 2 +
+                #        (self.coords[1] - base.coords[1]) ** 2) <= base.radius + self.radius:
+
                 self.encounter(base)
-
-                # not done, yet
-
                 self.check_responses(units, base.kind)
                 self.check_requests(units, kinds_of_bases)
 
@@ -91,9 +94,6 @@ class Unit(Sprite):
                 dx = unit.coords[0] - self.coords[0] 
                 dy = unit.coords[1] - self.coords[1]
 
-                # dx = self.coords[0] - unit.coords[0] 
-                # dy = self.coords[1] - unit.coords[1]
-
                 if dx == 0:
                     dx = 0.00000001
 
@@ -106,9 +106,6 @@ class Unit(Sprite):
 
                 if self.rotation < 0:
                     self.rotation = 2 * pi + self.rotation
-
-
-                # print('I' if dx > 0 and dy > 0 else 'II' if dx < 0 and dy > 0 else 'III' if dx < 0 and dy < 0 else 'IV', "->", 'I' if 0 < self.rotation < pi / 2 else 'II' if pi / 2 < self.rotation < pi else 'III' if pi < self.rotation < 3 * pi / 2 else 'IV' if 3 * pi / 2 < self.rotation < 2 * pi else "bonk", self.rotation)
 
             self.check_responses(units, base_kind)
 
@@ -134,5 +131,3 @@ class Unit(Sprite):
 
         self.check_requests(set(units), kinds_of_bases)
         self.check_collides(set(units), bases, kinds_of_bases, walls)
-
-
