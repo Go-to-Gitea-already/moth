@@ -39,6 +39,9 @@ class Engine:
 
     def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list,
                  radius_of_base: float, unit_radius: float, units_speed: float, distance: float):
+
+        pygame.init()
+
         self.screen = None
         self.units_speed = units_speed
         self.width = width

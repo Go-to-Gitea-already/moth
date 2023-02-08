@@ -1,13 +1,13 @@
 import pygame.image
 from main_code.engine import Engine, Generator
-from main_code.base_level import InputUIDefineLevel, GUIDefineLevel
+from main_code.base_level import *
 import math
 from main_code.unit import Unit
 from main_code.base import Base
 from random import random
 
 
-class Field(InputUIDefineLevel, GUIDefineLevel):
+class Field(ComplexLevel):
     def __init__(self):
 
         w = 600

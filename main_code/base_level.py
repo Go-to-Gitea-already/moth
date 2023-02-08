@@ -8,10 +8,7 @@ class Variables:
 
 
 class InputUIDefineLevel(Engine):
-    def __init__(self, *args, **kvargs):
-        super().__init__(*args, **kvargs)
-
-        pygame.init()
+    def __init__(self):
         self.input_variables = Variables()
         self.input_variables.MOVE_EVENT = pygame.USEREVENT + 2
         self.input_variables.CHECK_EVENT = pygame.USEREVENT + 3
@@ -134,9 +131,6 @@ class InputUIDefineLevel(Engine):
 
 class GUIDefineLevel(Engine):
     def __init__(self, *args, **kvargs):
-        super().__init__(*args, **kvargs)
-
-        pygame.init()
         self.draw_variables = Variables()
 
         self.draw_variables.menus = list()
@@ -158,8 +152,13 @@ class GUIDefineLevel(Engine):
 
 class LogicDefineLevel(Engine):
     def __init__(self):
-        super().__init__(*args, **kvargs)
-
-        pygame.init()
         self.logic_variables = Variables()
+
+
+class ComplexLevel(InputUIDefineLevel, GUIDefineLevel, LogicDefineLevel, Engine):
+    def __init__(self, *args, **kvargs):
+        Engine.__init__(self, *args, **kvargs)
+        InputUIDefineLevel.__init__(self)
+        GUIDefineLevel.__init__(self)
+        LogicDefineLevel.__init__(self)
 

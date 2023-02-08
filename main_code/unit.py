@@ -51,8 +51,8 @@ class Unit(Sprite):
 
                 # not done, yet
 
-                self.check_responses(units, base.kind)
-                self.check_requests(units, kinds_of_bases)
+                # self.check_responses(units, base.kind)
+                # self.check_requests(units, kinds_of_bases)
 
         for wall in walls:
             if wall.kind != 0:
