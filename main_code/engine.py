@@ -7,6 +7,18 @@ from ui.drop_down_menu import DropDownMenu
 from main_code.wall import Wall
 
 import pygame
+import os
+import sys
+
+
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    return image
 
 
 class Generator:
@@ -68,6 +80,8 @@ class Engine:
         self.generators = ['B']
         self.getters = ['A']
 
+        self.space = load_image("space.jpg")
+
     def generate(self):
         self.units = list()
         self.bases = list()
@@ -114,7 +128,8 @@ class Engine:
     WALL_COLOR = (255, 0, 128)
 
     def render(self, screen):
-        screen.fill((0, 0, 0))
+
+        screen.blit(self.space, (0, 0))
 
         for wall in self.walls:
             pygame.draw.line(screen, self.WALL_COLOR, wall.first_point, wall.second_point, wall.width)
