@@ -42,6 +42,7 @@ class Unit(Sprite):
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
                 another_unit.listen(units, self, base_kind )
+                another_unit.check_responses(units, base_kind)
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
         for base in bases:
@@ -83,6 +84,7 @@ class Unit(Sprite):
             self.destiny = base.next
             self.rotation = (self.rotation + pi) % (2 * pi)
 
+
     def listen(self, units, unit, base_kind):
         if self.points[base_kind] > unit.points[base_kind] + self.distance * 1:
             self.points[base_kind] = unit.points[base_kind] + self.distance
@@ -110,7 +112,9 @@ class Unit(Sprite):
 
                 # print('I' if dx > 0 and dy > 0 else 'II' if dx < 0 and dy > 0 else 'III' if dx < 0 and dy < 0 else 'IV', "->", 'I' if 0 < self.rotation < pi / 2 else 'II' if pi / 2 < self.rotation < pi else 'III' if pi < self.rotation < 3 * pi / 2 else 'IV' if 3 * pi / 2 < self.rotation < 2 * pi else "bonk", self.rotation)
 
-            self.check_responses(units, base_kind)
+            # В этом нет нужды.
+            # было перенесено в метод self.check_responses
+            # self.check_responses(units, base_kind)
 
     def move(self):
         dx = self.speed * cos(self.rotation)
