@@ -10,15 +10,6 @@ class Variables:
 class InputUIDefineLevel(Engine):
     def __init__(self):
         self.input_variables = Variables()
-        self.input_variables.MOVE_EVENT = pygame.USEREVENT + 2
-        self.input_variables.CHECK_EVENT = pygame.USEREVENT + 3
-        self.input_variables.UNIT_UPDATE = pygame.USEREVENT + 4
-        self.input_variables.GENERATE_RES = pygame.USEREVENT + 5
-
-        pygame.time.set_timer(self.input_variables.MOVE_EVENT, 50)
-        pygame.time.set_timer(self.input_variables.CHECK_EVENT, 100)
-        pygame.time.set_timer(self.input_variables.UNIT_UPDATE, 50)
-        pygame.time.set_timer(self.input_variables.GENERATE_RES, 1000)
 
         self.input_variables.moving_of_base = False
         self.input_variables.wall_building = False
@@ -27,10 +18,10 @@ class InputUIDefineLevel(Engine):
         self.input_variables.wall_coord = None
         self.input_variables.wall_index = None
 
-        self.on_timer_tick.append(self.event_handle)
+        self.on_timer_tick.append(self.input_event_handle)
 
 
-    def event_handle(self):
+    def input_event_handle(self):
         for event in self.events:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -49,33 +40,7 @@ class InputUIDefineLevel(Engine):
 
                     else:
                         pass
-
-            if event.type == self.input_variables.UNIT_UPDATE:
-                for unit in self.units:
-                    unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
-
-            if event.type == self.input_variables.GENERATE_RES:
-                for base in self.bases:
-                    base.update()
-                    if base.kind in self.getters:
-                        self.resource += base.resource
-                        base.resource = 0
-                print(self.resource)
-
-            if event.type == pygame.QUIT:
-                self.running = False
-
-#             if event.type == self.input_variables.MOVE_EVENT:
-#                 for unit in self.units:
-#                     forward(unit)
-
-#             if event.type == self.input_variables.CHECK_EVENT:
-#                 for unit in self.units:
-#                     self.check_encounter(unit)
-# 
-#                 for unit in self.units:
-#                     self.check_requests(unit)
-# 
+ 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     self.input_variables.moving_of_base = False
@@ -153,6 +118,50 @@ class GUIDefineLevel(Engine):
 class LogicDefineLevel(Engine):
     def __init__(self):
         self.logic_variables = Variables()
+
+        self.logic_variables.MOVE_EVENT = pygame.USEREVENT + 2
+        self.logic_variables.CHECK_EVENT = pygame.USEREVENT + 3
+        self.logic_variables.UNIT_UPDATE = pygame.USEREVENT + 4
+        self.logic_variables.GENERATE_RES = pygame.USEREVENT + 5
+
+        pygame.time.set_timer(self.logic_variables.MOVE_EVENT, 50)
+        pygame.time.set_timer(self.logic_variables.CHECK_EVENT, 100)
+        pygame.time.set_timer(self.logic_variables.UNIT_UPDATE, 50)
+        pygame.time.set_timer(self.logic_variables.GENERATE_RES, 1000)
+
+        self.on_timer_tick.append(self.logic_event_handle)
+
+
+    def logic_event_handle(self):
+        for event in self.events:
+
+            if event.type == self.logic_variables.UNIT_UPDATE:
+                for unit in self.units:
+                    unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
+
+            if event.type == self.logic_variables.GENERATE_RES:
+                for base in self.bases:
+                    base.update()
+                    if base.kind in self.getters:
+                        self.resource += base.resource
+                        base.resource = 0
+                print(self.resource)
+
+            if event.type == pygame.QUIT:
+                self.running = False
+
+#             if event.type == self.logic_variables.MOVE_EVENT:
+#                 for unit in self.units:
+#                     forward(unit)
+
+#             if event.type == self.logic_variables.CHECK_EVENT:
+#                 for unit in self.units:
+#                     self.check_encounter(unit)
+# 
+#                 for unit in self.units:
+#                     self.check_requests(unit)
+#
+
 
 
 class ComplexLevel(InputUIDefineLevel, GUIDefineLevel, LogicDefineLevel, Engine):
