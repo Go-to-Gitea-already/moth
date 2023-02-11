@@ -66,6 +66,8 @@ class Engine:
         self.count_of_bases = count_of_bases
         self.all_sprites = pygame.sprite.Group()
 
+        self.screen = pygame.display.set_mode((self.width, self.height))
+
         self.on_timer_tick = list()
 
         self.unit_types = list()
@@ -170,10 +172,6 @@ class Engine:
     def start(self):
         # нужно для нормального функционирования стартового меню
         self.events = pygame.event.get()
-
-        self.screen = pygame.display.set_mode((self.width, self.height))
-
-        start_menu = Menu(self, {"start": lambda: print("started")}, stop_main_process=True)
 
         TIMER_TICK = pygame.USEREVENT + 1
         self.running = True

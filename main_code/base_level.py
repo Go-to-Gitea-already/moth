@@ -77,6 +77,7 @@ class InputUIDefineLevel(Engine):
 
         def spawn(unit_type):
             if self.resource < self.unit_costs[unit_type.params["unit_type"]]:
+                print("not enoth resources")
                 return False
 
             self.resource -= self.unit_costs[unit_type.params["unit_type"]]
@@ -95,10 +96,14 @@ class InputUIDefineLevel(Engine):
 
 
 class GUIDefineLevel(Engine):
-    def __init__(self, *args, **kvargs):
+    def __init__(self):
         self.draw_variables = Variables()
 
         self.draw_variables.menus = list()
+
+        
+        # стартовое меню
+        self.call_start_menu()
 
         # создание меню быстрых действий
         rect = pygame.Rect((0, 0), (0, 0))
@@ -107,12 +112,53 @@ class GUIDefineLevel(Engine):
         rect.width=25
         rect.height=150
         self.draw_variables.action_menu = Buttons(self,
-                                                  {'1': lambda: print(1),
-                                                   '2': lambda: print(2),
-                                                   '3': lambda: print(3)}, 
+                                                  {'p': self.pause_button,
+                                                   's': self.save_game,
+                                                   'e': self.end_game}, 
                                                   is_static=True,
                                                   rect=rect,
                                                   button_w=25, button_h=25)
+
+
+    def call_start_menu(self):
+        rect = pygame.Rect((0, 100), (self.width, self.height - 100))
+        self.draw_variables.start_menu = Buttons(self, {"start": lambda: print("started"),
+                                                        "load": self.load_game,
+                                                        "create": self.create_game,
+                                                        "exit": exit},
+                                                 stop_main_process=True, rect=rect)
+
+
+    def pause_button(self):
+        # заготовка
+        if self.running:
+            self.pause()
+        else:
+            self.resume()
+
+
+    def resume(self):
+        pass
+
+
+    def pause(self):
+        pass
+
+
+    def save_game(self):
+        pass
+
+
+    def end_game(self):
+        self.call_start_menu()
+
+
+    def load_game(self):
+        pass
+
+
+    def create_game(self):
+        pass
 
 
 class LogicDefineLevel(Engine):
