@@ -115,7 +115,7 @@ class GUIDefineLevel(Engine):
 
         # создание меню быстрых действий
         rect = pygame.Rect((0, 0), (0, 0))
-        rect.left=self.height - 50
+        rect.left=self.width - 50
         rect.top=25
         rect.width=25
         rect.height=150
