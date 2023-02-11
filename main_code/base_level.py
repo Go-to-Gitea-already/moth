@@ -7,6 +7,8 @@ class Variables:
     pass
 
 
+"""все связанное с вводом с клавиатуры и мыши располагается здесь, в родителях и наследниках. 
+Также здесь расположено создание меню для спавна юнита"""
 class InputUIDefineLevel(Engine):
     def __init__(self):
         self.input_variables = Variables()
@@ -95,6 +97,8 @@ class InputUIDefineLevel(Engine):
         DropDownMenu(self, options, *coords)
 
 
+"""все связанное со стандартными меню располагается здесь, в родителях и наследниках
+кроме создания меню для спавна юнита"""
 class GUIDefineLevel(Engine):
     def __init__(self):
         self.draw_variables = Variables()
@@ -102,8 +106,12 @@ class GUIDefineLevel(Engine):
         self.draw_variables.menus = list()
 
         
-        # стартовое меню
-        self.call_start_menu()
+        # пихаем стартовое меню вместо старта **злобный смех**
+        def start():
+            self.call_main_menu()
+        
+        self.start = start
+
 
         # создание меню быстрых действий
         rect = pygame.Rect((0, 0), (0, 0))
@@ -112,45 +120,57 @@ class GUIDefineLevel(Engine):
         rect.width=25
         rect.height=150
         self.draw_variables.action_menu = Buttons(self,
-                                                  {'p': self.pause_button,
+                                                  {'p': self.pause_game,
                                                    's': self.save_game,
                                                    'e': self.end_game}, 
                                                   is_static=True,
                                                   rect=rect,
                                                   button_w=25, button_h=25)
+        # print(2)
 
 
-    def call_start_menu(self):
+    def call_main_menu(self):
         rect = pygame.Rect((0, 100), (self.width, self.height - 100))
-        self.draw_variables.start_menu = Buttons(self, {"start": lambda: print("started"),
-                                                        "load": self.load_game,
+        self.draw_variables.main_menu = Buttons(self, {"load": self.load_game,
                                                         "create": self.create_game,
+                                                        "about": self.about,
+                                                        "manual": self.manual,
                                                         "exit": exit},
                                                  stop_main_process=True, rect=rect)
 
 
-    def pause_button(self):
-        # заготовка
-        if self.running:
-            self.pause()
-        else:
-            self.resume()
-
-
     def resume(self):
-        pass
+        self.pause = False
 
 
-    def pause(self):
-        pass
+    def pause_game(self):
+        self.pause = True
+
+        rect = pygame.Rect((0, 100), (self.width, self.height - 100))
+        self.draw_variables.pause_menu = Buttons(self, {"resume": self.resume,
+                                                        "save": self.save_game,
+                                                        "load": self.load_game,
+                                                        "create": self.create_game,
+                                                        "main menu": self.call_main_menu},
+                                                 stop_main_process=True, rect=rect)
+
 
 
     def save_game(self):
         pass
 
 
+    def about(self):
+        pass
+
+
+    def manual(self):
+        pass
+
+
     def end_game(self):
-        self.call_start_menu()
+        self.running = False
+        self.call_main_menu()
 
 
     def load_game(self):
@@ -158,9 +178,28 @@ class GUIDefineLevel(Engine):
 
 
     def create_game(self):
-        pass
+        self.running = True
+
+        self.generate()
+        super().start()
 
 
+"""все связанное с UI находится здесь, в родителях и наследниках"""
+class UIDefineLevel(InputUIDefineLevel, GUIDefineLevel):
+    def __init__(self):
+        InputUIDefineLevel.__init__(self)
+        GUIDefineLevel.__init__(self)
+        self.on_timer_tick.append(self.UI_event_handle)
+
+
+    def UI_event_handle(self):
+        for event in self.events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    self.pause_game()
+
+
+"""все связанное с логикой располагается здесь, в родителях и наследниках"""
 class LogicDefineLevel(Engine):
     def __init__(self):
         self.logic_variables = Variables()
@@ -180,7 +219,7 @@ class LogicDefineLevel(Engine):
 
     def logic_event_handle(self):
         for event in self.events:
-
+            # print(event)
             if event.type == self.logic_variables.UNIT_UPDATE:
                 for unit in self.units:
                     unit.update(self.units, self.bases, self.kinds_of_bases, self.walls)
@@ -210,10 +249,11 @@ class LogicDefineLevel(Engine):
 
 
 
-class ComplexLevel(InputUIDefineLevel, GUIDefineLevel, LogicDefineLevel, Engine):
+"""Шаблон для стандартного уровня"""
+class ComplexLevel(UIDefineLevel, LogicDefineLevel, Engine):
     def __init__(self, *args, **kvargs):
         Engine.__init__(self, *args, **kvargs)
-        InputUIDefineLevel.__init__(self)
-        GUIDefineLevel.__init__(self)
+        UIDefineLevel.__init__(self)
         LogicDefineLevel.__init__(self)
+        # print(1)
 

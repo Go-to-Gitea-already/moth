@@ -31,7 +31,7 @@ class Generator:
         s = set(self.params.items()) | (set(kvargs.items()) - set(self.params.items()))
         args = dict(s)
 
-        print(s, args)
+        # print(s, args)
 
         return constructor(**args)
     
@@ -53,6 +53,8 @@ class Engine:
                  radius_of_base: float, unit_radius: float, units_speed: float, distance: float):
 
         pygame.init()
+
+        self.pause = False
 
         self.screen = None
         self.units_speed = units_speed
