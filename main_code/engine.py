@@ -29,8 +29,16 @@ class Generator:
 
     def generate(self, constructor, **kvargs):
 
-        s = set(self.params.items()) | (set(kvargs.items()) - set(self.params.items()))
-        args = dict(s)
+        args = self.params
+
+        for a in kvargs.keys():
+            if args.get(a) is None:
+                args[a] = kvargs[a]
+
+        print(self.name)
+        print(args.get("speed"))
+        print(self.params.get("speed"))
+        print(kvargs.get("speed"))
 
         # print(s, args)
 
