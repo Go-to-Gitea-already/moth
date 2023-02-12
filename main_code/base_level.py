@@ -2,7 +2,11 @@ from main_code.engine import *
 from ui.buttons import Buttons
 from ui.input import InputBox
 import pygame
+
+import shutil
+from zipfile import ZipFile
 import os
+
 # from file_handler import *
 
 
@@ -179,13 +183,19 @@ class GUIDefineLevel(Engine):
         if not os.path.exists(filename):
             os.makedirs(filename)
 
-        with (open(f"{filename}/units.json", "w") as units,
-              open(f"{filename}/bases.json", "w") as bases,
-              open(f"{filename}/walls.json", "w") as walls):
+            with (open(f"{filename}/units.json", "w") as units,
+                  open(f"{filename}/bases.json", "w") as bases,
+                  open(f"{filename}/walls.json", "w") as walls):
 
-            units.write(self.units_to_text())
-            bases.write(self.bases_to_text())
-            walls.write(self.walls_to_text())
+                units.write(self.units_to_text())
+                bases.write(self.bases_to_text())
+                walls.write(self.walls_to_text())
+
+            shutil.make_archive(filename, 'zip', root_dir=filename)
+            shutil.rmtree(filename)
+            shutil.move(filename + ".zip", filename)
+
+        return False
 
 
     def load_game(self):
@@ -198,13 +208,17 @@ class GUIDefineLevel(Engine):
         if not os.path.exists(filename):
             os.makedirs(filename)
 
-        with (open(f"{filename}/units.json", "r") as units,
-              open(f"{filename}/bases.json", "r") as bases,
-              open(f"{filename}/walls.json", "r") as walls):
+        with ZipFile(filename) as zipfile:
+            with (zipfile.open('units.json', 'r') as units,
+                  zipfile.open('bases.json', 'r') as bases,
+                  zipfile.open('walls.json', 'r') as walls):
+#         with (open(f"{filename}/units.json", "r") as units,
+#               open(f"{filename}/bases.json", "r") as bases,
+#               open(f"{filename}/walls.json", "r") as walls):
 
-            self.units_from_json(units.read())
-            self.bases_from_json(bases.read())
-            self.walls_from_json(walls.read())
+                self.units_from_json(units.read())
+                self.bases_from_json(bases.read())
+                self.walls_from_json(walls.read())
 
 
     def about(self):
