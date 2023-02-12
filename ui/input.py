@@ -4,12 +4,14 @@ import pygame as pygame
 pygame.init()
 COLOR_INACTIVE = (200, 100, 0)
 COLOR_ACTIVE = (255, 128, 0)
-FONT = pygame.font.Font(None, 32)
 
 
 class InputBox:
 
     def __init__(self, engine, x, y, w, h, text=''):
+
+        self.font = pygame.font.Font(None, h)
+
         self.rect = pygame.Rect(0, 0, 0, 0)
         print(x, y, w, h)
         self.rect.top = y
@@ -19,7 +21,7 @@ class InputBox:
 
         self.color = COLOR_INACTIVE
         self.text = text
-        self.txt_surface = FONT.render(text, True, self.color)
+        self.txt_surface = self.font.render(text, True, self.color)
         self.active = False
         self.engine = engine
         self.screen = engine.screen
@@ -42,7 +44,7 @@ class InputBox:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
-                self.txt_surface = FONT.render(self.text, True, self.color)
+                self.txt_surface = self.font.render(self.text, True, self.color)
 
 
     def draw(self):
