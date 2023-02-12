@@ -1,6 +1,8 @@
 from main_code.engine import *
 from ui.buttons import Buttons
+from ui.input import InputBox
 import pygame
+import os
 # from file_handler import *
 
 
@@ -9,6 +11,7 @@ class Variables:
 
 
 pygame.font.init()
+
 
 """все связанное с вводом с клавиатуры и мыши располагается здесь, в родителях и наследниках. 
 Также здесь расположено создание меню для спавна юнита"""
@@ -149,7 +152,7 @@ class GUIDefineLevel(Engine):
     def pause_game(self):
 
         font = pygame.font.SysFont(None, 100)
-        text = font.render( "pause", True, (255, 128, 0))
+        text = font.render("pause", True, (255, 128, 0))
 
         f = lambda: self.screen.blit(text, (self.width // 2 - 100, 50))
 
@@ -167,7 +170,41 @@ class GUIDefineLevel(Engine):
 
 
     def save_game(self):
-        pass
+        input_box = InputBox(self, self.width - 100, self.height - 50, 100, 200)
+        filename = "./saves/" + input_box.wait().rstrip("/").rstrip("\\") + ".lvl"
+
+        if not os.path.exists("./saves/"):
+            os.makedirs("./saves/")
+
+        if not os.path.exists(filename):
+            os.makedirs(filename)
+
+        with (open(f"{filename}/units.json", "w") as units,
+              open(f"{filename}/bases.json", "w") as bases,
+              open(f"{filename}/walls.json", "w") as walls):
+
+            units.write(self.units_to_text())
+            bases.write(self.bases_to_text())
+            walls.write(self.walls_to_text())
+
+
+    def load_game(self):
+        input_box = InputBox(self, self.width - 100, self.height - 50, 100, 200)
+        filename = "./saves/" + input_box.wait().rstrip("/").rstrip("\\") + ".lvl"
+
+        if not os.path.exists("./saves/"):
+            os.makedirs("./saves/")
+
+        if not os.path.exists(filename):
+            os.makedirs(filename)
+
+        with (open(f"{filename}/units.json", "r") as units,
+              open(f"{filename}/bases.json", "r") as bases,
+              open(f"{filename}/walls.json", "r") as walls):
+
+            self.units_from_json(units.read())
+            self.bases_from_json(bases.read())
+            self.walls_from_json(walls.read())
 
 
     def about(self):
@@ -183,10 +220,6 @@ class GUIDefineLevel(Engine):
         self.call_main_menu()
 
 
-    def load_game(self):
-        pass
-
-
     def create_game(self):
         self.running = True
 
@@ -200,6 +233,16 @@ class UIDefineLevel(InputUIDefineLevel, GUIDefineLevel):
         InputUIDefineLevel.__init__(self)
         GUIDefineLevel.__init__(self)
         self.on_timer_tick.append(self.UI_event_handle)
+
+
+        font = pygame.font.SysFont(None, 25)
+
+        def print_resouce_count():
+            text = font.render(str(self.resource), True, (255, 128, 0))
+
+            self.screen.blit(text, (25, 25))
+
+        self.on_timer_tick.append(print_resouce_count)
 
 
     def UI_event_handle(self):
@@ -266,13 +309,4 @@ class ComplexLevel(UIDefineLevel, LogicDefineLevel, Engine):
         UIDefineLevel.__init__(self)
         LogicDefineLevel.__init__(self)
 
-
-        font = pygame.font.SysFont(None, 25)
-
-        def print_resouce_count():
-            text = font.render(str(self.resource), True, (255, 128, 0))
-
-            self.screen.blit(text, (25, 25))
-
-        self.on_timer_tick.append(print_resouce_count)
 

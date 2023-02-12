@@ -1,4 +1,5 @@
 import math
+import json
 from random import choice, uniform, random
 from main_code.unit import Unit
 from main_code.base import Base
@@ -170,6 +171,42 @@ class Engine:
             rotation = -unit.rotation - math.pi / 2
             image = pygame.transform.rotate(self.sprites[unit.unit_type], rotation * 180 / math.pi)
             self.screen.blit(image, rect)
+
+
+    def parse_to_dict(self, arr):
+        return map(lambda x: x.__dict__, arr)
+
+
+    def units_to_text(self):
+        units_json = json.dumps(list(self.parse_to_dict(self.units)))
+        return units_json
+
+
+    def bases_to_text(self):
+        bases_json = json.dumps(list(self.parse_to_dict(self.bases)))
+        return bases_json
+
+
+    def walls_to_text(self):
+        walls_json = json.dumps(list(self.parse_to_dict(self.walls)))
+        return walls_json
+
+    
+    def parse_from_dict(self, t, arr):
+        return list(map(lambda x: t(dict_converted=x), arr))
+
+
+    def units_from_json(self, text):
+        self.units = self.parse_from_dict(Unit, json.loads(text))
+
+
+    def bases_from_json(self, text):
+        self.bases = self.parse_from_dict(Base, json.loads(text))
+
+
+    def walls_from_json(self, text):
+        self.walls = self.parse_from_dict(Wall, json.loads(text))
+
 
     def start(self):
         # нужно для нормального функционирования стартового меню
