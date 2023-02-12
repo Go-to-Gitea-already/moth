@@ -169,7 +169,7 @@ class GUIDefineLevel(Engine):
                                                         "create": self.create_game,
                                                         "main menu": self.call_main_menu},
                                                  processes_on=[f],
-                                                 stop_main_process=True, rect=rect)
+                                                 stop_main_process=True, rect=rect, font_size=25)
 
 
 
