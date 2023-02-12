@@ -6,7 +6,7 @@ pygame.font.init()
 
 class Buttons:
     def __init__(self, engine, choices: dict,
-                 background_process=None, is_static=False, stop_main_process=False,
+                 background_process=None, processes_on=None, processes_under=None, is_static=False, stop_main_process=False,
                  rect=None, button_w=200, button_h=50):
 
         self.engine = engine
@@ -18,6 +18,9 @@ class Buttons:
 
         self.is_static = is_static
         self.stop_main_process = stop_main_process
+
+        self.processes_on = processes_on
+        self.processes_under = processes_under
 
 #         self.background = Thread(target=background_process)
 #         self.background.start()
@@ -95,6 +98,11 @@ class Buttons:
 
         return False
 
+    
+    def make_all(functions):
+        for f in functions:
+            f()
+
 
     def make_choice(self, choices: dict):
         self.choices = choices
@@ -103,6 +111,9 @@ class Buttons:
         self.running = True
 
         def on_timer_tick():
+            if self.processes_under is not None:
+                Buttons.make_all(self.processes_under)
+
             if self.stop_main_process:
                 events = pygame.event.get()
 
@@ -122,6 +133,9 @@ class Buttons:
                             self.engine.events.remove(e)
 
             self.draw()
+
+            if self.processes_on is not None:
+                Buttons.make_all(self.processes_on)
 
             # говнокод
             if not (self.running or self.stop_main_process):

@@ -1,11 +1,14 @@
 from main_code.engine import *
 from ui.buttons import Buttons
 import pygame
+# from file_handler import *
 
 
 class Variables:
     pass
 
+
+pygame.font.init()
 
 """все связанное с вводом с клавиатуры и мыши располагается здесь, в родителях и наследниках. 
 Также здесь расположено создание меню для спавна юнита"""
@@ -97,8 +100,8 @@ class InputUIDefineLevel(Engine):
         DropDownMenu(self, options, *coords)
 
 
-"""все связанное со стандартными меню располагается здесь, в родителях и наследниках
-кроме создания меню для спавна юнита"""
+"""все связанное со стандартными меню располагается здесь, в родителях и наследниках.
+Kроме создания меню для спавна юнита"""
 class GUIDefineLevel(Engine):
     def __init__(self):
         self.draw_variables = Variables()
@@ -144,14 +147,21 @@ class GUIDefineLevel(Engine):
 
 
     def pause_game(self):
+
+        font = pygame.font.SysFont(None, 100)
+        text = font.render( "pause", True, (255, 128, 0))
+
+        f = lambda: self.screen.blit(text, (self.width // 2 - 100, 50))
+
         self.pause = True
 
-        rect = pygame.Rect((0, 100), (self.width, self.height - 100))
+        rect = pygame.Rect((0, 150), (self.width, self.height - 100))
         self.draw_variables.pause_menu = Buttons(self, {"resume": self.resume,
                                                         "save": self.save_game,
                                                         "load": self.load_game,
                                                         "create": self.create_game,
                                                         "main menu": self.call_main_menu},
+                                                 processes_on=[f],
                                                  stop_main_process=True, rect=rect)
 
 
@@ -249,11 +259,20 @@ class LogicDefineLevel(Engine):
 
 
 
-"""Шаблон для стандартного уровня"""
+"""Шаблон для стандартного уровня. Здесь может определяться функционал связанный со всеми базовыми уровнями."""
 class ComplexLevel(UIDefineLevel, LogicDefineLevel, Engine):
     def __init__(self, *args, **kvargs):
         Engine.__init__(self, *args, **kvargs)
         UIDefineLevel.__init__(self)
         LogicDefineLevel.__init__(self)
-        # print(1)
+
+
+        font = pygame.font.SysFont(None, 25)
+
+        def print_resouce_count():
+            text = font.render(str(self.resource), True, (255, 128, 0))
+
+            self.screen.blit(text, (25, 25))
+
+        self.on_timer_tick.append(print_resouce_count)
 
