@@ -10,7 +10,13 @@ FONT = pygame.font.Font(None, 32)
 class InputBox:
 
     def __init__(self, engine, x, y, w, h, text=''):
-        self.rect = pygame.Rect(x, y, w, h)
+        self.rect = pygame.Rect(0, 0, 0, 0)
+        print(x, y, w, h)
+        self.rect.top = y
+        self.rect.left = x
+        self.rect.width = w
+        self.rect.height = h
+
         self.color = COLOR_INACTIVE
         self.text = text
         self.txt_surface = FONT.render(text, True, self.color)
@@ -45,8 +51,8 @@ class InputBox:
 
 
     def update(self):
-        width = max(200, self.txt_surface.get_width()+10)
-        self.rect.w = width
+        # width = max(200, self.txt_surface.get_width()+10)
+        # self.rect.w = width
 
         self.draw()
 

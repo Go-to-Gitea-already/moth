@@ -174,7 +174,7 @@ class GUIDefineLevel(Engine):
 
 
     def save_game(self):
-        input_box = InputBox(self, self.width - 100, self.height - 50, 100, 200)
+        input_box = InputBox(self, self.width // 2 - 80, self.height // 2 - 20, 160, 40)
         filename = "./saves/" + input_box.wait().rstrip("/").rstrip("\\") + ".lvl"
 
         if not os.path.exists("./saves/"):
@@ -199,7 +199,7 @@ class GUIDefineLevel(Engine):
 
 
     def load_game(self):
-        input_box = InputBox(self, self.width - 100, self.height - 50, 100, 200)
+        input_box = InputBox(self, self.width // 2 - 80, self.height // 2 - 20, 160, 40)
         filename = "./saves/" + input_box.wait().rstrip("/").rstrip("\\") + ".lvl"
 
         if not os.path.exists("./saves/"):
@@ -212,9 +212,6 @@ class GUIDefineLevel(Engine):
             with (zipfile.open('units.json', 'r') as units,
                   zipfile.open('bases.json', 'r') as bases,
                   zipfile.open('walls.json', 'r') as walls):
-#         with (open(f"{filename}/units.json", "r") as units,
-#               open(f"{filename}/bases.json", "r") as bases,
-#               open(f"{filename}/walls.json", "r") as walls):
 
                 self.units_from_json(units.read())
                 self.bases_from_json(bases.read())
