@@ -64,10 +64,11 @@ class Buttons:
             self.height = self.button_h
             rect.center = x, y
 
-            text_rect = pygame.Rect(rect.x, rect.y, rect.width, rect.height)
-            text_rect.width = t_w
-            text_rect.height = t_h
-            text_rect.center = rect.center
+            text_rect = pygame.Rect(x, y, t_w, t_h)
+            text_rect.center = x, y
+#             text_rect.width = t_w
+#             text_rect.height = t_h
+#             text_rect.center = x, y
 
             self.choices_boxes.append((label, rect, text, text_rect) ,)
 

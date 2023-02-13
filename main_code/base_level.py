@@ -219,11 +219,84 @@ class GUIDefineLevel(Engine):
 
 
     def about(self):
-        pass
+        rect = pygame.Rect((0, 150), (self.width, self.height - 100))
+        self.draw_variables.pause_menu = Buttons(self, {"instructions": self.manual,
+                                                        "how it works": self.how_does_it_works,
+                                                        "about us": self.about_us,
+                                                        "main menu": self.call_main_menu},
+                                                 stop_main_process=True, rect=rect, font_size=25)
+
+
+
+    def about_us(self):
+        font = pygame.font.SysFont(None, 50)
+
+        text1 = font.render("two guys from one town", True, (255, 128, 0))
+
+        rect1 = pygame.Rect(0, 0, *text1.get_size())
+
+        rect1.center = self.width // 2, 100
+
+        f1= lambda: self.screen.blit(text1, rect1)
+
+        # rect = pygame.Rect((150, 250), (self.width, self.height - 100))
+        rect = pygame.Rect((0, 150), (self.width, self.height - 100))
+        self.draw_variables.pause_menu = Buttons(self, {"i'm watching for you": self.call_main_menu},
+                                                 processes_on=[f1],
+                                                 stop_main_process=True, rect=rect, font_size=25)
+
+
+
+
+    def how_does_it_works(self):
+        font = pygame.font.SysFont(None, 20)
+
+        text1 = font.render("think yourself,i wanna sleep...", True, (255, 128, 0))
+        rect1 = pygame.Rect(0, 0, *text1.get_size())
+        rect1.center = (self.width // 2, 100)
+        f1 = lambda: self.screen.blit(text1, rect1)
+
+        # rect = pygame.Rect((250, 150), (self.width, self.height - 100))
+        rect = pygame.Rect((0, 150), (self.width, self.height - 100))
+        self.draw_variables.pause_menu = Buttons(self, {"good night": self.call_main_menu},
+                                                 processes_on=[f1],
+                                                 stop_main_process=True, rect=rect, font_size=25)
+
 
 
     def manual(self):
-        pass
+        font = pygame.font.SysFont(None, 40)
+
+        text1 = font.render("Do as uoy want!", True, (255, 128, 0))
+        rect1 = pygame.Rect(0, 0, *text1.get_size())
+        rect1.center = (self.width // 2, 100)
+        f1 = lambda: self.screen.blit(text1, rect1)
+
+        text2 = font.render("Do something with mouse.", True, (255, 128, 0))
+        rect2 = pygame.Rect(0, 0, *text2.get_size())
+        rect2.center = (self.width // 2, 150)
+        f2 = lambda: self.screen.blit(text2, rect2)
+
+        text3 = font.render("Use keys 's', 'p' and your mind", True, (255, 128, 0))
+        rect3 = pygame.Rect(0, 0, *text3.get_size())
+        rect3.center = (self.width // 2, 200)
+        f3 = lambda: self.screen.blit(text3, rect3)
+
+        text4 = font.render("You can save and load game,", True, (255, 128, 0))
+        rect4 = pygame.Rect(0, 0, *text4.get_size())
+        rect4.center = (self.width // 2, 250)
+        f4 = lambda: self.screen.blit(text4, rect4)
+
+        text5 = font.render("by pressing on buttons, try it :-)", True, (255, 128, 0))
+        rect5 = pygame.Rect(0, 0, *text5.get_size())
+        rect5.center = (self.width // 2, 300)
+        f5 = lambda: self.screen.blit(text5, rect5)
+
+        # rect = pygame.Rect((250, 150), (self.width, self.height - 100))
+        rect = pygame.Rect((0, 150), (self.width, self.height - 100))
+        self.draw_variables.pause_menu = Buttons(self, {"get it": self.call_main_menu},
+                                                 processes_on=[f1, f2, f3, f4, f5],
+                                                 stop_main_process=True, rect=rect, font_size=25)
 
 
     def end_game(self):
