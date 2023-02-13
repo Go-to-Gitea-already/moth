@@ -29,6 +29,7 @@ class Field(ComplexLevel):
     def generate(self):
         self.units = list()
         self.bases = list()
+        self.walls = list()
 
         self.sprites = list()
 

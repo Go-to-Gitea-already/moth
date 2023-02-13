@@ -256,7 +256,7 @@ class GUIDefineLevel(Engine):
     def how_does_it_works(self):
         font = pygame.font.SysFont(None, 20)
 
-        text1 = font.render("think yourself,i wanna sleep...", True, (255, 128, 0))
+        text1 = font.render("""think yourself, i wanna sleep...""", True, (255, 128, 0))
         rect1 = pygame.Rect(0, 0, *text1.get_size())
         rect1.center = (self.width // 2, 100)
         f1 = lambda: self.screen.blit(text1, rect1)
