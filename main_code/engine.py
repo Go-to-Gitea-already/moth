@@ -64,6 +64,7 @@ class Engine:
         pygame.init()
 
         self.pause = False
+        self.running = False
 
         self.screen = None
         self.units_speed = units_speed

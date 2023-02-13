@@ -217,7 +217,9 @@ class GUIDefineLevel(Engine):
                 self.bases_from_json(bases.read())
                 self.walls_from_json(walls.read())
 
-        self.create_game()
+        # self.create_game()
+        if not self.running:
+            super().start()
 
 
     def about(self):
