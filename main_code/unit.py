@@ -28,7 +28,10 @@ class Unit:
         self.speed = speed
         self.unit_type = unit_type
         self.resource = 0
+
+        # счётчик сигналов принимаемых на обработку
         self.speaking = 0
+        self.max_speaking = 40
 
         if dict_converted is not None:
             for key, value in dict_converted.items():
@@ -38,30 +41,42 @@ class Unit:
 
     def check_requests(self, units: set, kinds_of_bases: list):
         for another_unit in units - {self}:
+
+            # если сигналов на обработке больше максимального значения - перестаём спрашивать
+            if self.speaking >= self.max_speaking:
+                break
+
             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
-                    another_unit.coords[1] - self.coords[1]) ** 2) < self.distance and\
-                    self.speaking <= 10:
+                    another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
+
                 self.speaking += 1
+
                 for key in kinds_of_bases:
-                    another_unit.listen(units, self, key)
+                    self.listen(units, another_unit, key)
+
 
     def check_responses(self, units: set, base_kind):
         for another_unit in units - {self}:
             if ((another_unit.coords[0] - self.coords[0]) ** 2 + (
                     another_unit.coords[1] - self.coords[1]) ** 2) ** 0.5 < self.distance:
+
+                another_unit.speaking += 1
+
                 another_unit.listen(units, self, base_kind )
-                another_unit.check_responses(units, base_kind)
+                # another_unit.check_responses(units, base_kind)
+
 
     def check_collides(self, units: set, bases: list, kinds_of_bases: list, walls: list):
         for base in bases:
-            if sqrt((self.coords[0] - base.coords[0]) ** 2 +
-                    (self.coords[1] - base.coords[1]) ** 2) <= base.radius + self.radius:
+            if sqrt(((self.coords[0] + self.radius / 2) - base.coords[0]) ** 2 +
+                    ((self.coords[1] + self.radius / 2) - base.coords[1]) ** 2) <= base.radius + self.radius:
                 self.encounter(base)
 
                 # not done, yet
 
                 # self.check_responses(units, base.kind)
                 # self.check_requests(units, kinds_of_bases)
+
 
         for wall in walls:
             if wall.kind != 0:
@@ -122,7 +137,7 @@ class Unit:
 
             # В этом нет нужды.
             # было перенесено в метод self.check_responses
-            # self.check_responses(units, base_kind)
+            self.check_responses(units, base_kind)
 
     def move(self):
         dx = self.speed * cos(self.rotation)
@@ -144,7 +159,8 @@ class Unit:
     def update(self, units: list, bases: list, kinds_of_bases: list, walls: list):
         self.move()
         self.speaking = 0
-        self.check_requests(set(units), kinds_of_bases)
         self.check_collides(set(units), bases, kinds_of_bases, walls)
+        self.check_requests(set(units), kinds_of_bases)
+        print(self.speaking)
 
 
