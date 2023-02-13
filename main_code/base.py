@@ -4,13 +4,11 @@ from pygame.image import load
 from os.path import join as os_join
 
 
-# class Base(Sprite):
-class Base:
-
+class Base(Sprite):
     def __init__(self, coords=(0, 0), image="./data/default_base.jpg", index=0, kind=0, next_base=1, radius=15,
                  sprites_group=Group(), dict_converted=None):
 
-        # super().__init__(sprites_group)
+        super().__init__(sprites_group)
 
         self.generators = ['B']
         self.getters = ['A']

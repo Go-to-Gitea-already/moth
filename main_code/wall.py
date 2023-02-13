@@ -4,9 +4,7 @@ from pygame.image import load
 from os.path import join as os_join
 
 
-# class Wall(Sprite):
-class Wall:
-
+class Wall(Sprite):
     def __init__(self, first_point=[0.0, 0.0], second_point=[1.0, 1.0], kind=0,
                  sprites_group=Group(), width=5, dict_converted=None):
 
