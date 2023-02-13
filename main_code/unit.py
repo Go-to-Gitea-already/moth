@@ -6,13 +6,14 @@ from math import cos, sin, pi, sqrt, atan
 from random import uniform
 
 
-class Unit(Sprite):
+# class Unit(Sprite):
+class Unit:
     def __init__(self, bases=(1, 2, 3), contains=(100, 100), coords=(0, 0), destiny=1, distance=10, image="./data/unit.png",
                  index=0, radius=1, rotation=pi, speed=(1), sprites_group=Group(), unit_type=0, dict_converted=None):
 
         self.points = dict({*map(lambda x: (x, distance + 1), bases)})
 
-        super().__init__(sprites_group)
+        # super().__init__(sprites_group)
 
         self.generators = ['B']
         self.getters = ['A']

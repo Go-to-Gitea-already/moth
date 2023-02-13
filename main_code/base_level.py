@@ -226,6 +226,8 @@ class GUIDefineLevel(Engine):
                                                         "main menu": self.call_main_menu},
                                                  stop_main_process=True, rect=rect, font_size=25)
 
+        self.create_game()
+
 
 
     def about_us(self):
