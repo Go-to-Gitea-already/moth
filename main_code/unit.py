@@ -28,6 +28,7 @@ class Unit:
         self.speed = speed
         self.unit_type = unit_type
         self.resource = 0
+        self.speaking = 0
 
         if dict_converted is not None:
             for key, value in dict_converted.items():
@@ -38,7 +39,9 @@ class Unit:
     def check_requests(self, units: set, kinds_of_bases: list):
         for another_unit in units - {self}:
             if sqrt((another_unit.coords[0] - self.coords[0]) ** 2 + (
-                    another_unit.coords[1] - self.coords[1]) ** 2) < self.distance:
+                    another_unit.coords[1] - self.coords[1]) ** 2) < self.distance and\
+                    self.speaking <= 10:
+                self.speaking += 1
                 for key in kinds_of_bases:
                     another_unit.listen(units, self, key)
 
@@ -140,7 +143,7 @@ class Unit:
 
     def update(self, units: list, bases: list, kinds_of_bases: list, walls: list):
         self.move()
-
+        self.speaking = 0
         self.check_requests(set(units), kinds_of_bases)
         self.check_collides(set(units), bases, kinds_of_bases, walls)
 
