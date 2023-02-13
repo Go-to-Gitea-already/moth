@@ -6,6 +6,7 @@ from main_code.base import Base
 from ui.buttons import Buttons as Menu
 from ui.drop_down_menu import DropDownMenu
 from main_code.wall import Wall
+from copy import deepcopy
 
 import pygame
 import os
@@ -29,18 +30,17 @@ class Generator:
 
     def generate(self, constructor, **kvargs):
 
-        args = self.params
+        args = deepcopy(self.params)
 
         for a in kvargs.keys():
             if args.get(a) is None:
                 args[a] = kvargs[a]
 
         print(self.name)
-        print(args.get("speed"))
-        print(self.params.get("speed"))
-        print(kvargs.get("speed"))
+        print(args.get("coords"))
+        print(self.params.get("coords"))
+        print(kvargs.get("coords"))
 
-        # print(s, args)
 
         return constructor(**args)
     
