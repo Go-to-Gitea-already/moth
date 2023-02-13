@@ -50,7 +50,7 @@ class Field(ComplexLevel):
 
         # не дефолтный тип юнита
         self.unit_types.append(Generator('S', bases=self.kinds_of_bases, destiny="B", distance=self.distance, image=unit_image,
-                 radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=1, speed=20))
+                 radius=self.unit_radius, sprites_group=self.all_sprites, unit_type=0, speed=20))
 
 
         unit_type = 0

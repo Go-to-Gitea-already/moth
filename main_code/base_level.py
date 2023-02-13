@@ -217,6 +217,8 @@ class GUIDefineLevel(Engine):
                 self.bases_from_json(bases.read())
                 self.walls_from_json(walls.read())
 
+        self.create_game()
+
 
     def about(self):
         rect = pygame.Rect((0, 150), (self.width, self.height - 100))
@@ -226,7 +228,6 @@ class GUIDefineLevel(Engine):
                                                         "main menu": self.call_main_menu},
                                                  stop_main_process=True, rect=rect, font_size=25)
 
-        self.create_game()
 
 
 
