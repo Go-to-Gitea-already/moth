@@ -1,12 +1,26 @@
 import math
+import json
 from random import choice, uniform, random
 from main_code.unit import Unit
 from main_code.base import Base
 from ui.buttons import Buttons as Menu
 from ui.drop_down_menu import DropDownMenu
 from main_code.wall import Wall
+from copy import deepcopy
 
 import pygame
+import os
+import sys
+
+
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    return image
 
 
 class Generator:
@@ -16,10 +30,17 @@ class Generator:
 
     def generate(self, constructor, **kvargs):
 
-        s = set(self.params.items()) | (set(kvargs.items()) - set(self.params.items()))
-        args = dict(s)
+        args = deepcopy(self.params)
 
-        print(s, args)
+        for a in kvargs.keys():
+            if args.get(a) is None:
+                args[a] = kvargs[a]
+
+        print(self.name)
+        print(args.get("coords"))
+        print(self.params.get("coords"))
+        print(kvargs.get("coords"))
+
 
         return constructor(**args)
     
@@ -39,6 +60,11 @@ class Engine:
 
     def __init__(self, width: int, height: int, count_of_units: int, count_of_bases: int, kinds_of_bases: list,
                  radius_of_base: float, unit_radius: float, units_speed: float, distance: float):
+
+        pygame.init()
+
+        self.pause = False
+
         self.screen = None
         self.units_speed = units_speed
         self.width = width
@@ -50,6 +76,8 @@ class Engine:
         self.count_of_units = count_of_units
         self.count_of_bases = count_of_bases
         self.all_sprites = pygame.sprite.Group()
+
+        self.screen = pygame.display.set_mode((self.width, self.height))
 
         self.on_timer_tick = list()
 
@@ -64,6 +92,8 @@ class Engine:
 
         self.generators = ['B']
         self.getters = ['A']
+
+        self.space = load_image("space.jpg")
 
     def generate(self):
         self.units = list()
@@ -111,7 +141,8 @@ class Engine:
     WALL_COLOR = (255, 0, 128)
 
     def render(self, screen):
-        screen.fill((0, 0, 0))
+
+        screen.blit(self.space, (0, 0))
 
         for wall in self.walls:
             pygame.draw.line(screen, self.WALL_COLOR, wall.first_point, wall.second_point, wall.width)
@@ -149,13 +180,45 @@ class Engine:
             image = pygame.transform.rotate(self.sprites[unit.unit_type], rotation * 180 / math.pi)
             self.screen.blit(image, rect)
 
+
+    def parse_to_dict(self, arr):
+        return map(lambda x: x.__dict__, arr)
+
+
+    def units_to_text(self):
+        units_json = json.dumps(list(self.parse_to_dict(self.units)))
+        return units_json
+
+
+    def bases_to_text(self):
+        bases_json = json.dumps(list(self.parse_to_dict(self.bases)))
+        return bases_json
+
+
+    def walls_to_text(self):
+        walls_json = json.dumps(list(self.parse_to_dict(self.walls)))
+        return walls_json
+
+    
+    def parse_from_dict(self, t, arr):
+        return list(map(lambda x: t(dict_converted=x), arr))
+
+
+    def units_from_json(self, text):
+        self.units = self.parse_from_dict(Unit, json.loads(text))
+
+
+    def bases_from_json(self, text):
+        self.bases = self.parse_from_dict(Base, json.loads(text))
+
+
+    def walls_from_json(self, text):
+        self.walls = self.parse_from_dict(Wall, json.loads(text))
+
+
     def start(self):
         # нужно для нормального функционирования стартового меню
         self.events = pygame.event.get()
-
-        self.screen = pygame.display.set_mode((self.width, self.height))
-
-        start_menu = Menu(self, {"start": lambda: print("started")}, stop_main_process=True)
 
         TIMER_TICK = pygame.USEREVENT + 1
         self.running = True
