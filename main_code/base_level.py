@@ -147,7 +147,7 @@ class GUIDefineLevel(Engine):
                                                         "create": self.create_game,
                                                         "about": self.about,
                                                         "manual": self.manual,
-                                                        "exit": exit},
+                                                        "exit": lambda: 1 / 0},
                                                  stop_main_process=True, rect=rect)
 
 
