@@ -31,7 +31,7 @@ class Unit:
 
         # счётчик сигналов принимаемых на обработку
         self.speaking = 0
-        self.max_speaking = 40
+        self.max_speaking = 10
 
         if dict_converted is not None:
             for key, value in dict_converted.items():
