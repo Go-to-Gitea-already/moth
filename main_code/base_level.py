@@ -1,6 +1,7 @@
 from main_code.engine import *
 from ui.buttons import Buttons
 from ui.input import InputBox
+from ui.label import Label
 import pygame
 
 import shutil
@@ -235,13 +236,9 @@ class GUIDefineLevel(Engine):
 
     def about_us(self):
         font = pygame.font.SysFont(None, 50)
-
         text1 = font.render("two guys from one town", True, (255, 128, 0))
-
         rect1 = pygame.Rect(0, 0, *text1.get_size())
-
         rect1.center = self.width // 2, 100
-
         f1= lambda: self.screen.blit(text1, rect1)
 
         # rect = pygame.Rect((150, 250), (self.width, self.height - 100))
@@ -256,15 +253,20 @@ class GUIDefineLevel(Engine):
     def how_does_it_works(self):
         font = pygame.font.SysFont(None, 20)
 
-        text1 = font.render("""think yourself, i wanna sleep...""", True, (255, 128, 0))
-        rect1 = pygame.Rect(0, 0, *text1.get_size())
-        rect1.center = (self.width // 2, 100)
-        f1 = lambda: self.screen.blit(text1, rect1)
+        with open("data/algorithm.txt", "r") as text:
+            label = Label(self, text.read())
+
+#         text1 = font.render("""think yourself, 
+#                             i wanna sleep...""", True, (255, 128, 0))
+#         rect1 = pygame.Rect(0, 0, *text1.get_size())
+#         rect1.center = (self.width // 2, 100)
+#         f1 = lambda: self.screen.blit(text1, rect1)
 
         # rect = pygame.Rect((250, 150), (self.width, self.height - 100))
         rect = pygame.Rect((0, 150), (self.width, self.height - 100))
+
         self.draw_variables.pause_menu = Buttons(self, {"good night": self.call_main_menu},
-                                                 processes_on=[f1],
+                                                 processes_on=[lambda: label.draw()],
                                                  stop_main_process=True, rect=rect, font_size=25)
 
 
