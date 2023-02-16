@@ -7,6 +7,7 @@ import pygame
 import shutil
 from zipfile import ZipFile
 import os
+import io
 
 # from file_handler import *
 
@@ -245,7 +246,7 @@ class GUIDefineLevel(Engine):
         rect = pygame.Rect((0, 150), (self.width, self.height - 100))
         self.draw_variables.pause_menu = Buttons(self, {"i'm watching for you": self.call_main_menu},
                                                  processes_on=[f1],
-                                                 stop_main_process=True, rect=rect, font_size=25)
+                                                 stop_main_process=True, rect=rect, font_size=12)
 
 
 
@@ -253,8 +254,9 @@ class GUIDefineLevel(Engine):
     def how_does_it_works(self):
         font = pygame.font.SysFont(None, 20)
 
-        with open("data/algorithm.txt", "r") as text:
-            label = Label(self, text.read())
+        with io.open("data/algorithm.txt", mode="r", encoding="utf-8") as text:
+            s = text.read()
+            label = Label(self, s)
 
 #         text1 = font.render("""think yourself, 
 #                             i wanna sleep...""", True, (255, 128, 0))
